@@ -13,7 +13,26 @@ function getToken(req: NextRequest): string | null {
 }
 
 export async function middleware(req: NextRequest) {
-    const { pathname } = req.nextUrl;
+    const { pathname, hostname } = req.nextUrl;
+    const baseDomain = process.env.NEXT_PUBLIC_BASE_DOMAIN ?? "thinkauric.com";
+
+    // ── Subdomain routing ────────────────────────────────────────────────────
+    // If request is on a subdomain (e.g. ironfit.thinkauric.com),
+    // rewrite /join/* to the tenant's signup form
+    const isSubdomain =
+        hostname !== baseDomain &&
+        hostname !== `www.${baseDomain}` &&
+        hostname.endsWith(`.${baseDomain}`);
+
+    if (isSubdomain) {
+        const slug = hostname.replace(`.${baseDomain}`, "");
+        // Rewrite root to the join page for this tenant slug
+        if (pathname === "/" || pathname === "") {
+            return NextResponse.rewrite(new URL(`/join/${slug}`, req.url));
+        }
+        // Allow all other paths through (dashboard, api, etc.)
+        return NextResponse.next();
+    }
 
     // Allow public auth API routes
     if (pathname.startsWith(API_AUTH_PREFIX)) return NextResponse.next();

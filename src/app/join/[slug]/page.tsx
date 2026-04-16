@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import { renderWaiver } from "@/lib/waiver";
+import PaymentForm from "@/components/ui/PaymentForm";
 
 interface Product {
     id: string; name: string; description?: string;
@@ -33,7 +34,7 @@ export default function JoinPage({ params }: { params: Promise<{ slug: string }>
 
     const [data, setData] = useState<FormData | null>(null);
     const [notFound, setNotFound] = useState(false);
-    const [step, setStep] = useState<"plan" | "info" | "waiver" | "done">("plan");
+    const [step, setStep] = useState<"plan" | "info" | "waiver" | "payment" | "done">("plan");
 
     const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
     const [form, setForm] = useState({
@@ -76,15 +77,34 @@ export default function JoinPage({ params }: { params: Promise<{ slug: string }>
         const unaccepted = allWaiverIds.filter((id) => !acceptedWaivers.includes(id));
         if (unaccepted.length > 0) return setError("Please accept all waivers to continue.");
 
+        // If product selected and has a price, go to payment step
+        const selectedProductData = data?.products.find((p) => p.id === selectedProduct);
+        if (selectedProductData && Number(selectedProductData.price) > 0) {
+            setStep("payment");
+            return;
+        }
+
+        await createAccount();
+    }
+
+    async function createAccount(card?: { cardNumber: string; expirationDate: string; cvv: string }) {
         setLoading(true);
         try {
             const res = await fetch(`/api/public/forms/${slug}/submit`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...form, productId: selectedProduct, acceptedWaiverIds: acceptedWaivers }),
+                body: JSON.stringify({
+                    ...form, productId: selectedProduct,
+                    acceptedWaiverIds: acceptedWaivers,
+                    card,
+                }),
             });
             const json = await res.json();
-            if (!res.ok) return setError(json.error || "Something went wrong.");
+            if (!res.ok) {
+                setError(json.error || "Something went wrong.");
+                if (card) setStep("waiver"); // go back if payment failed
+                return;
+            }
             login(json.data.token, json.data.user, json.data.tenant);
             setStep("done");
         } catch {
@@ -239,6 +259,20 @@ export default function JoinPage({ params }: { params: Promise<{ slug: string }>
                         </div>
                     </div>
                 )}
+
+                {/* Step: Payment */}
+                {step === "payment" && (() => {
+                    const p = data.products.find((p) => p.id === selectedProduct)!;
+                    return (
+                        <PaymentForm
+                            amount={Number(p.price)}
+                            productName={p.name}
+                            billingInterval={p.billingInterval}
+                            onBack={() => setStep("waiver")}
+                            onPay={async (card) => { await createAccount(card); }}
+                        />
+                    );
+                })()}
             </div>
         </div>
     );
