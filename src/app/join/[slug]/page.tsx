@@ -36,7 +36,10 @@ export default function JoinPage({ params }: { params: Promise<{ slug: string }>
     const [step, setStep] = useState<"plan" | "info" | "waiver" | "done">("plan");
 
     const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
-    const [form, setForm] = useState({ firstName: "", lastName: "", email: "", password: "" });
+    const [form, setForm] = useState({
+        firstName: "", lastName: "", email: "", password: "",
+        phone: "", address: "",
+    });
     const [showPw, setShowPw] = useState(false);
     const [acceptedWaivers, setAcceptedWaivers] = useState<string[]>([]);
     const [error, setError] = useState("");
@@ -144,8 +147,8 @@ export default function JoinPage({ params }: { params: Promise<{ slug: string }>
                         {data.products.map((p) => (
                             <button key={p.id} onClick={() => setSelectedProduct(p.id)}
                                 className={`w-full rounded-xl border p-5 text-left transition-all ${selectedProduct === p.id
-                                        ? "border-indigo-500 bg-indigo-500/10"
-                                        : "border-gray-700 bg-gray-900 hover:border-gray-600"
+                                    ? "border-indigo-500 bg-indigo-500/10"
+                                    : "border-gray-700 bg-gray-900 hover:border-gray-600"
                                     }`}>
                                 <div className="flex items-start justify-between">
                                     <div>
@@ -179,6 +182,8 @@ export default function JoinPage({ params }: { params: Promise<{ slug: string }>
                             <Input label="Last Name" placeholder="Doe" {...field("lastName")} />
                         </div>
                         <Input label="Email" type="email" placeholder="john@example.com" {...field("email")} />
+                        <Input label="Phone" type="tel" placeholder="+1 555 000 0000" {...field("phone")} />
+                        <Input label="Address" placeholder="123 Main St, City" {...field("address")} />
                         <div className="flex flex-col gap-1">
                             <label className="text-sm font-medium text-gray-300">Password</label>
                             <div className="relative">

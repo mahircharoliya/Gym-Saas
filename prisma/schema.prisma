@@ -32,6 +32,12 @@ enum BillingInterval {
   YEARLY
 }
 
+enum DurationType {
+  ONGOING      // never expires
+  LIMITED_TIME // expires after N days
+  PERIODIC     // fixed start + end date
+}
+
 enum ProductStatus {
   ACTIVE
   ARCHIVED
@@ -123,6 +129,11 @@ model Product {
   // Access limits (nullable — only used when relevant)
   visitLimit     Int?            // for LIMITED_VISITS
   durationDays   Int?            // for TIME_BASED (e.g. 30 days)
+
+  // Duration type
+  durationType   DurationType    @default(ONGOING)
+  periodStart    DateTime?       // for PERIODIC
+  periodEnd      DateTime?       // for PERIODIC
 
   // Discount
   discountPercent Decimal?       @db.Decimal(5, 2)
