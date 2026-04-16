@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { CreditCard, CheckCircle2, XCircle, Clock } from "lucide-react";
+import { CreditCard, CheckCircle2, XCircle, Clock, ChevronDown, ChevronUp } from "lucide-react";
 import Button from "@/components/ui/Button";
+import PaymentForm from "@/components/ui/PaymentForm";
 
 interface Membership {
     id: string;
@@ -38,6 +39,8 @@ export default function BillingPage() {
     const [memberships, setMemberships] = useState<Membership[]>([]);
     const [loading, setLoading] = useState(true);
     const [cancelling, setCancelling] = useState<string | null>(null);
+    const [showUpdateCard, setShowUpdateCard] = useState(false);
+    const [cardSuccess, setCardSuccess] = useState("");
 
     const fetchMemberships = useCallback(async () => {
         setLoading(true);
@@ -60,6 +63,18 @@ export default function BillingPage() {
         });
         setCancelling(null);
         fetchMemberships();
+    }
+
+    async function updateCard(card: { cardNumber: string; expirationDate: string; cvv: string }) {
+        const res = await fetch("/api/member/payment-method", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            body: JSON.stringify(card),
+        });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error ?? "Failed to update card.");
+        setCardSuccess("Payment method updated.");
+        setShowUpdateCard(false);
     }
 
     const active = memberships.filter((m) => m.status === "ACTIVE");
@@ -114,6 +129,31 @@ export default function BillingPage() {
                             </div>
                         </div>
                     )}
+
+                    {/* Update payment method */}
+                    <div className="rounded-xl border border-gray-800 bg-gray-900 overflow-hidden">
+                        <button
+                            onClick={() => setShowUpdateCard((v) => !v)}
+                            className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-gray-800/40 transition-colors">
+                            <div className="flex items-center gap-3">
+                                <CreditCard size={16} className="text-gray-400" />
+                                <p className="text-sm font-medium text-white">Update Payment Method</p>
+                            </div>
+                            {showUpdateCard ? <ChevronUp size={15} className="text-gray-400" /> : <ChevronDown size={15} className="text-gray-400" />}
+                        </button>
+                        {showUpdateCard && (
+                            <div className="border-t border-gray-800 p-5">
+                                {cardSuccess && <p className="mb-3 text-sm text-emerald-400">{cardSuccess}</p>}
+                                <PaymentForm
+                                    amount={0}
+                                    productName="Update card on file"
+                                    billingInterval="ONCE"
+                                    onBack={() => setShowUpdateCard(false)}
+                                    onPay={updateCard}
+                                />
+                            </div>
+                        )}
+                    </div>
                 </>
             )}
         </div>

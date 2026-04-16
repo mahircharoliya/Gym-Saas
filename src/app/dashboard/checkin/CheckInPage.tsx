@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { Search, CheckCircle2, XCircle, UserCheck } from "lucide-react";
+import { Search, CheckCircle2, XCircle, UserCheck, Download } from "lucide-react";
 import dynamic from "next/dynamic";
+import QRCode from "react-qr-code";
 
 const QRScanner = dynamic(() => import("@/components/checkin/QRScanner"), { ssr: false });
 
@@ -94,6 +95,41 @@ export default function CheckInPage() {
         }
     }
 
+    // Members see their personal QR only
+    if (user?.role === "MEMBER") {
+        const qrValue = JSON.stringify({ userId: user.id, tenantId: tenant?.id, type: "checkin" });
+        function downloadSVG() {
+            const svg = document.getElementById("member-qr-ci");
+            if (!svg) return;
+            const blob = new Blob([new XMLSerializer().serializeToString(svg)], { type: "image/svg+xml" });
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = "checkin-qr.svg";
+            a.click();
+        }
+        return (
+            <div className="max-w-sm mx-auto space-y-6">
+                <div>
+                    <h2 className="text-lg font-semibold text-white">Check-In QR Code</h2>
+                    <p className="text-sm text-gray-400 mt-0.5">Show this at the front desk to check in.</p>
+                </div>
+                <div className="rounded-2xl border border-gray-800 bg-gray-900 p-8 flex flex-col items-center gap-6">
+                    <div className="rounded-xl bg-white p-5">
+                        <QRCode id="member-qr-ci" value={qrValue} size={200} />
+                    </div>
+                    <div className="text-center">
+                        <p className="font-semibold text-white">{user.firstName} {user.lastName}</p>
+                        <p className="text-sm text-gray-400">{tenant?.name}</p>
+                    </div>
+                    <button onClick={downloadSVG}
+                        className="flex items-center gap-2 rounded-lg border border-gray-700 px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 transition-colors w-full justify-center">
+                        <Download size={15} /> Download QR
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-6 max-w-2xl">
             <div>
@@ -104,8 +140,8 @@ export default function CheckInPage() {
             {/* Toast */}
             {toast && (
                 <div className={`flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium ${toast.type === "success"
-                        ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-400"
-                        : "bg-red-500/10 border border-red-500/30 text-red-400"
+                    ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-400"
+                    : "bg-red-500/10 border border-red-500/30 text-red-400"
                     }`}>
                     {toast.type === "success" ? <CheckCircle2 size={16} /> : <XCircle size={16} />}
                     {toast.message}
