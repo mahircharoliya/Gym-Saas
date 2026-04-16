@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
-const PUBLIC_ROUTES = ["/login", "/signup", "/invite", "/join"];
+const PUBLIC_ROUTES = ["/login", "/signup", "/invite", "/join", "/api/cron"];
 const API_AUTH_PREFIX = "/api/auth";
 
 function getToken(req: NextRequest): string | null {
@@ -39,6 +39,7 @@ export async function middleware(req: NextRequest) {
     if (pathname.startsWith("/api/public")) return NextResponse.next();
 
     // Allow public pages
+    if (pathname === "/") return NextResponse.next();
     if (PUBLIC_ROUTES.some((r) => pathname.startsWith(r))) return NextResponse.next();
 
     const token = getToken(req);

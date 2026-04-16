@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 const ALL_TABS = [
     { label: "General", href: "/dashboard/settings", roles: ["ADMIN", "MANAGER"] },
     { label: "Team", href: "/dashboard/settings/team", roles: ["ADMIN"] },
+    { label: "Notifications", href: "/dashboard/settings/notifications", roles: ["ADMIN", "MANAGER", "TRAINER", "MEMBER"] },
     { label: "Password", href: "/dashboard/settings/password", roles: ["ADMIN", "MANAGER", "TRAINER", "MEMBER"] },
 ];
 

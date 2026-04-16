@@ -16,6 +16,8 @@ export async function GET(req: NextRequest) {
     const classes = await prisma.gymClass.findMany({
         where: {
             tenantId: payload!.tenantId,
+            // Trainers only see their own classes
+            ...(payload!.role === "TRAINER" ? { trainerId: payload!.userId } : {}),
             ...(start && end ? {
                 startAt: { gte: new Date(start), lte: new Date(end) },
             } : {}),
