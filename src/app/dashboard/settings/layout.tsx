@@ -3,15 +3,19 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
+import { useAuth } from "@/context/AuthContext";
 
-const TABS = [
-    { label: "General", href: "/dashboard/settings" },
-    { label: "Team", href: "/dashboard/settings/team" },
-    { label: "Password", href: "/dashboard/settings/password" },
+const ALL_TABS = [
+    { label: "General", href: "/dashboard/settings", roles: ["ADMIN", "MANAGER"] },
+    { label: "Team", href: "/dashboard/settings/team", roles: ["ADMIN"] },
+    { label: "Password", href: "/dashboard/settings/password", roles: ["ADMIN", "MANAGER", "TRAINER", "MEMBER"] },
 ];
 
 export default function SettingsLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
+    const { user } = useAuth();
+
+    const tabs = ALL_TABS.filter((t) => t.roles.includes(user?.role ?? ""));
 
     return (
         <div className="space-y-6">
@@ -20,9 +24,8 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
                 <p className="text-sm text-gray-400 mt-0.5">Manage your gym and account settings.</p>
             </div>
 
-            {/* Sub-nav tabs */}
             <div className="flex gap-1 border-b border-gray-800">
-                {TABS.map((tab) => {
+                {tabs.map((tab) => {
                     const active = tab.href === "/dashboard/settings"
                         ? pathname === tab.href
                         : pathname.startsWith(tab.href);
