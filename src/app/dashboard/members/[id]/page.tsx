@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import { ArrowLeft, Trash2, CheckCircle2, XCircle, Clock } from "lucide-react";
+import { ArrowLeft, Trash2, CheckCircle2, XCircle, Clock, Plus } from "lucide-react";
 
 interface MemberDetail {
     id: string; email: string; firstName: string; lastName: string;
@@ -41,6 +41,9 @@ export default function MemberDetailPage({ params }: { params: Promise<{ id: str
     const [form, setForm] = useState({ firstName: "", lastName: "", phone: "", role: "" });
     const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
+    const [products, setProducts] = useState<{ id: string; name: string }[]>([]);
+    const [addingProduct, setAddingProduct] = useState(false);
+    const [selectedProductId, setSelectedProductId] = useState("");
 
     useEffect(() => {
         fetch(`/api/admin/members/${id}`, { headers: { Authorization: `Bearer ${token}` } })
@@ -57,6 +60,10 @@ export default function MemberDetailPage({ params }: { params: Promise<{ id: str
                 }
             })
             .finally(() => setLoading(false));
+        // Fetch available products
+        fetch("/api/products", { headers: { Authorization: `Bearer ${token}` } })
+            .then((r) => r.json())
+            .then((j) => { if (j.success) setProducts(j.data); });
     }, [id, token]);
 
     async function save(e: React.FormEvent) {
@@ -79,7 +86,37 @@ export default function MemberDetailPage({ params }: { params: Promise<{ id: str
         await fetch(`/api/member/memberships/${mpId}/cancel`, {
             method: "POST", headers: { Authorization: `Bearer ${token}` },
         });
-        // Refresh
+        const res = await fetch(`/api/admin/members/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+        const json = await res.json();
+        if (json.success) setMember(json.data);
+    }
+
+    async function assignProduct() {
+        if (!selectedProductId) return;
+        setAddingProduct(true);
+        const res = await fetch(`/api/admin/members/${id}/products`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ productId: selectedProductId }),
+        });
+        const json = await res.json();
+        if (!res.ok) { setError(json.error); setAddingProduct(false); return; }
+        setSelectedProductId("");
+        const refresh = await fetch(`/api/admin/members/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+        const refreshJson = await refresh.json();
+        if (refreshJson.success) setMember(refreshJson.data);
+        setAddingProduct(false);
+    }
+
+    async function refundMembership(mpId: string) {
+        const transactionId = prompt("Enter Authorize.net Transaction ID (leave blank to just cancel):");
+        const amount = transactionId ? prompt("Refund amount:") : null;
+        if (!confirm("Cancel and refund this membership?")) return;
+        await fetch(`/api/admin/members/${id}/refund`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ memberProductId: mpId, transactionId, amount }),
+        });
         const res = await fetch(`/api/admin/members/${id}`, { headers: { Authorization: `Bearer ${token}` } });
         const json = await res.json();
         if (json.success) setMember(json.data);
@@ -158,7 +195,22 @@ export default function MemberDetailPage({ params }: { params: Promise<{ id: str
 
             {/* Memberships */}
             <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
-                <p className="text-sm font-medium text-white mb-4">Memberships</p>
+                <div className="flex items-center justify-between mb-4">
+                    <p className="text-sm font-medium text-white">Memberships</p>
+                </div>
+
+                {/* Assign product */}
+                <div className="flex gap-2 mb-4">
+                    <select value={selectedProductId} onChange={(e) => setSelectedProductId(e.target.value)}
+                        className="flex-1 rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="">Select product to assign…</option>
+                        {products.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+                    </select>
+                    <Button onClick={assignProduct} loading={addingProduct} className="w-auto px-3 gap-1.5">
+                        <Plus size={14} /> Assign
+                    </Button>
+                </div>
+
                 {member.memberProducts.length === 0 ? (
                     <p className="text-sm text-gray-500">No memberships.</p>
                 ) : (
@@ -183,10 +235,16 @@ export default function MemberDetailPage({ params }: { params: Promise<{ id: str
                                         </p>
                                     </div>
                                     {mp.status === "ACTIVE" && (
-                                        <button onClick={() => cancelMembership(mp.id)}
-                                            className="text-xs text-red-400 hover:text-red-300 transition-colors">
-                                            Cancel
-                                        </button>
+                                        <div className="flex gap-3">
+                                            <button onClick={() => cancelMembership(mp.id)}
+                                                className="text-xs text-yellow-400 hover:text-yellow-300 transition-colors">
+                                                Cancel
+                                            </button>
+                                            <button onClick={() => refundMembership(mp.id)}
+                                                className="text-xs text-red-400 hover:text-red-300 transition-colors">
+                                                Refund
+                                            </button>
+                                        </div>
                                     )}
                                 </div>
                             );

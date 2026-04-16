@@ -29,17 +29,21 @@ export default function MembersPage() {
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState("");
     const [roleFilter, setRoleFilter] = useState("");
+    const [sortBy, setSortBy] = useState<"newest" | "oldest" | "name">("newest");
     const [selected, setSelected] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
     const [importing, setImporting] = useState(false);
     const [importMsg, setImportMsg] = useState("");
+    const [showAddModal, setShowAddModal] = useState(false);
 
     const fetchMembers = useCallback(async () => {
         setLoading(true);
+        const orderBy = sortBy === "name" ? "firstName" : sortBy === "oldest" ? "createdAt_asc" : "createdAt_desc";
         const params = new URLSearchParams({
             page: String(page), limit: "20",
             ...(search ? { search } : {}),
             ...(roleFilter ? { role: roleFilter } : {}),
+            ...(orderBy ? { orderBy } : {}),
         });
         const res = await fetch(`/api/admin/members?${params}`, {
             headers: { Authorization: `Bearer ${token}` },
@@ -56,7 +60,7 @@ export default function MembersPage() {
     useEffect(() => { fetchMembers(); }, [fetchMembers]);
 
     // Reset page on filter change
-    useEffect(() => { setPage(1); }, [search, roleFilter]);
+    useEffect(() => { setPage(1); }, [search, roleFilter, sortBy]);
 
     function toggleSelect(id: string) {
         setSelected((s) => s.includes(id) ? s.filter((x) => x !== id) : [...s, id]);
@@ -113,6 +117,9 @@ export default function MembersPage() {
                         loading={importing} className="w-auto gap-2 px-3">
                         <Upload size={14} /> Import CSV
                     </Button>
+                    <Button variant="ghost" onClick={() => setShowAddModal(true)} className="w-auto gap-2 px-3">
+                        <UserPlus size={14} /> Add Member
+                    </Button>
                     <Button onClick={() => router.push("/dashboard/settings/team")}
                         className="w-auto gap-2 px-3">
                         <UserPlus size={14} /> Invite
@@ -138,6 +145,12 @@ export default function MembersPage() {
                 <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}
                     className="rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500">
                     {ROLES.map((r) => <option key={r} value={r}>{r || "All Roles"}</option>)}
+                </select>
+                <select value={sortBy} onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+                    className="rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="name">Name A–Z</option>
                 </select>
             </div>
 
@@ -237,6 +250,69 @@ export default function MembersPage() {
                     </div>
                 </div>
             )}
+
+            {showAddModal && (
+                <AddMemberModal
+                    token={token!}
+                    onClose={() => setShowAddModal(false)}
+                    onSaved={fetchMembers}
+                />
+            )}
+        </div>
+    );
+}
+
+interface AddMemberModalProps { token: string; onClose: () => void; onSaved: () => void }
+
+function AddMemberModal({ token, onClose, onSaved }: AddMemberModalProps) {
+    const [form, setForm] = useState({ firstName: "", lastName: "", email: "", phone: "", role: "MEMBER", password: "" });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+
+    async function save(e: React.FormEvent) {
+        e.preventDefault();
+        setError("");
+        if (!form.firstName || !form.lastName || !form.email || !form.password)
+            return setError("First name, last name, email and password are required.");
+        setLoading(true);
+        try {
+            const res = await fetch("/api/admin/members", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                body: JSON.stringify(form),
+            });
+            const json = await res.json();
+            if (!res.ok) return setError(json.error ?? "Failed to create member.");
+            onSaved(); onClose();
+        } finally { setLoading(false); }
+    }
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+            <div className="w-full max-w-md rounded-2xl border border-gray-800 bg-gray-900 p-6 shadow-2xl space-y-4">
+                <p className="font-semibold text-white">Add Member</p>
+                {error && <p className="text-sm text-red-400">{error}</p>}
+                <form onSubmit={save} className="space-y-3">
+                    <div className="grid grid-cols-2 gap-3">
+                        <Input label="First Name" value={form.firstName} onChange={(e) => setForm(f => ({ ...f, firstName: e.target.value }))} />
+                        <Input label="Last Name" value={form.lastName} onChange={(e) => setForm(f => ({ ...f, lastName: e.target.value }))} />
+                    </div>
+                    <Input label="Email" type="email" value={form.email} onChange={(e) => setForm(f => ({ ...f, email: e.target.value }))} />
+                    <Input label="Phone" value={form.phone} onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))} />
+                    <Input label="Temp Password" type="password" value={form.password} onChange={(e) => setForm(f => ({ ...f, password: e.target.value }))} />
+                    <div className="flex flex-col gap-1">
+                        <label className="text-sm font-medium text-gray-300">Role</label>
+                        <select value={form.role} onChange={(e) => setForm(f => ({ ...f, role: e.target.value }))}
+                            className="rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                            {["MEMBER", "TRAINER", "MANAGER", "ADMIN"].map(r => <option key={r} value={r}>{r}</option>)}
+                        </select>
+                    </div>
+                    <div className="flex gap-3 pt-2">
+                        <Button variant="ghost" type="button" onClick={onClose} className="flex-1">Cancel</Button>
+                        <Button type="submit" loading={loading} className="flex-1">Add Member</Button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 }
