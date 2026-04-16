@@ -1,0 +1,309 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  MANAGER
+  TRAINER
+  MEMBER
+}
+
+enum MembershipType {
+  FULL_ACCESS       // unlimited visits
+  LIMITED_VISITS    // fixed number of visits
+  TIME_BASED        // access for N days from activation
+  CLASS_BASED       // access to specific classes only
+}
+
+enum BillingInterval {
+  ONCE
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+enum ProductStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+// ─── Models ──────────────────────────────────────────────────────────────────
+
+model Tenant {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  domain    String?  @unique
+  logoUrl   String?
+  address   String?
+  phone     String?
+  email     String?
+  timezone  String   @default("America/New_York")
+  // Notification toggles
+  emailNotifications Boolean @default(true)
+  smsNotifications   Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users    User[]
+  invites  Invite[]
+  products Product[]
+  signupForms SignupForm[]
+  waivers     Waiver[]
+}
+
+model User {
+  id             String    @id @default(cuid())
+  tenantId       String
+  email          String
+  hashedPassword String?
+  firstName      String
+  lastName       String
+  phone          String?
+  role           Role      @default(MEMBER)
+  emailVerified  Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  tenant  Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  invites Invite[]
+  memberProducts MemberProduct[]
+  signedWaivers  SignedWaiver[]
+  checkIns       CheckIn[]
+  trainerClasses GymClass[]     @relation("TrainerClasses")
+  classBookings  ClassBooking[]
+
+  @@unique([tenantId, email])
+  @@index([tenantId])
+  @@index([email])
+}
+
+model Invite {
+  id         String    @id @default(cuid())
+  tenantId   String
+  email      String
+  role       Role      @default(MEMBER)
+  token      String    @unique
+  invitedBy  String
+  acceptedAt DateTime?
+  expiresAt  DateTime
+  createdAt  DateTime  @default(now())
+
+  tenant  Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  inviter User   @relation(fields: [invitedBy], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([token])
+}
+
+
+model Product {
+  id             String          @id @default(cuid())
+  tenantId       String
+  name           String
+  description    String?
+  membershipType MembershipType
+  status         ProductStatus   @default(ACTIVE)
+
+  // Pricing
+  price          Decimal         @db.Decimal(10, 2)
+  comparePrice   Decimal?        @db.Decimal(10, 2) // crossed-out "was" price
+  billingInterval BillingInterval @default(ONCE)
+
+  // Access limits (nullable — only used when relevant)
+  visitLimit     Int?            // for LIMITED_VISITS
+  durationDays   Int?            // for TIME_BASED (e.g. 30 days)
+
+  // Discount
+  discountPercent Decimal?       @db.Decimal(5, 2)
+  discountEndsAt  DateTime?
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  tenant         Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  memberProducts MemberProduct[]
+
+  @@index([tenantId])
+  @@index([tenantId, status])
+}
+
+enum MemberProductStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  PAUSED
+}
+
+model MemberProduct {
+  id              String              @id @default(cuid())
+  tenantId        String
+  userId          String
+  productId       String
+
+  status          MemberProductStatus @default(ACTIVE)
+  visitsRemaining Int?                // for LIMITED_VISITS
+  activatedAt     DateTime            @default(now())
+  expiresAt       DateTime?           // for TIME_BASED / fixed billing
+  cancelledAt     DateTime?
+
+  // Authorize.net refs
+  authNetCustomerId      String?
+  authNetSubscriptionId  String?
+
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([userId])
+  @@index([productId])
+}
+
+model SignupForm {
+  id          String   @id @default(cuid())
+  tenantId    String
+  name        String
+  slug        String
+  description String?
+  isActive    Boolean  @default(true)
+  productIds  String[] // array of Product IDs to offer on this form
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant   Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  waivers  FormWaiver[]
+
+  @@unique([tenantId, slug])
+  @@index([tenantId])
+}
+
+model Waiver {
+  id        String   @id @default(cuid())
+  tenantId  String
+  title     String
+  // Body supports {{first_name}}, {{last_name}}, {{date}} tokens
+  body      String   @db.Text
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant          Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  formWaivers     FormWaiver[]
+  signedWaivers   SignedWaiver[]
+
+  @@index([tenantId])
+}
+
+// Join: which waivers are attached to which signup forms
+model FormWaiver {
+  id           String @id @default(cuid())
+  signupFormId String
+  waiverId     String
+  order        Int    @default(0)
+
+  signupForm SignupForm @relation(fields: [signupFormId], references: [id], onDelete: Cascade)
+  waiver     Waiver     @relation(fields: [waiverId], references: [id], onDelete: Cascade)
+
+  @@unique([signupFormId, waiverId])
+}
+
+model SignedWaiver {
+  id        String   @id @default(cuid())
+  tenantId  String
+  userId    String
+  waiverId  String
+  ipAddress String?
+  signedAt  DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  waiver Waiver @relation(fields: [waiverId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, waiverId])
+  @@index([tenantId])
+  @@index([userId])
+}
+
+model CheckIn {
+  id        String   @id @default(cuid())
+  tenantId  String
+  userId    String
+  method    String   @default("MANUAL") // MANUAL | QR
+  note      String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@index([userId])
+  @@index([tenantId, createdAt])
+}
+
+enum ClassStatus {
+  SCHEDULED
+  CANCELLED
+  COMPLETED
+}
+
+model GymClass {
+  id          String      @id @default(cuid())
+  tenantId    String
+  trainerId   String?
+  name        String
+  description String?
+  location    String?
+  color       String      @default("#6366f1")
+  capacity    Int         @default(20)
+  status      ClassStatus @default(SCHEDULED)
+
+  // Scheduling
+  startAt     DateTime
+  endAt       DateTime
+  isRecurring Boolean     @default(false)
+  recurringId String?     // links recurring instances together
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  trainer   User?          @relation("TrainerClasses", fields: [trainerId], references: [id], onDelete: SetNull)
+  bookings  ClassBooking[]
+
+  @@index([tenantId])
+  @@index([tenantId, startAt])
+  @@index([recurringId])
+}
+
+enum BookingStatus {
+  CONFIRMED
+  CANCELLED
+  WAITLISTED
+}
+
+model ClassBooking {
+  id        String        @id @default(cuid())
+  tenantId  String
+  classId   String
+  userId    String
+  status    BookingStatus @default(CONFIRMED)
+  bookedAt  DateTime      @default(now())
+  cancelledAt DateTime?
+
+  gymClass GymClass @relation(fields: [classId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([classId, userId])
+  @@index([tenantId])
+  @@index([userId])
+}
