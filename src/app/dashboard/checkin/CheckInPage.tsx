@@ -20,15 +20,18 @@ interface CheckInRecord {
 }
 
 interface Toast { type: "success" | "error"; message: string }
+interface ConfirmMember { id: string; firstName: string; lastName: string; email: string; plan?: string; visitsRemaining?: number | null }
 
 export default function CheckInPage() {
-    const { token } = useAuth();
-    const [tab, setTab] = useState<"manual" | "qr">("manual");
+    const { token, user, tenant } = useAuth();
+    const [tab, setTab] = useState<"manual" | "qr" | "gymdoor">("manual");
     const [query, setQuery] = useState("");
     const [results, setResults] = useState<Member[]>([]);
     const [searching, setSearching] = useState(false);
     const [todayCheckIns, setTodayCheckIns] = useState<CheckInRecord[]>([]);
     const [toast, setToast] = useState<Toast | null>(null);
+    const [confirmMember, setConfirmMember] = useState<ConfirmMember | null>(null);
+    const [confirming, setConfirming] = useState(false);
     const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     const showToast = (type: Toast["type"], message: string) => {
@@ -62,7 +65,7 @@ export default function CheckInPage() {
         }, 300);
     }, [query, token]);
 
-    async function checkIn(userId: string, method: "MANUAL" | "QR") {
+    async function checkIn(userId: string, method: "MANUAL" | "QR" | "GYMDOOR") {
         const res = await fetch("/api/checkin", {
             method: "POST",
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -82,6 +85,22 @@ export default function CheckInPage() {
         fetchToday();
     }
 
+    function openConfirm(m: Member, method: "MANUAL" | "QR") {
+        const plan = m.memberProducts[0];
+        setConfirmMember({
+            id: m.id, firstName: m.firstName, lastName: m.lastName, email: m.email,
+            plan: plan?.product.name, visitsRemaining: plan?.visitsRemaining,
+        });
+    }
+
+    async function confirmCheckIn(method: "MANUAL" | "QR" | "GYMDOOR") {
+        if (!confirmMember) return;
+        setConfirming(true);
+        await checkIn(confirmMember.id, method);
+        setConfirmMember(null);
+        setConfirming(false);
+    }
+
     async function handleQRScan(raw: string) {
         try {
             const data = JSON.parse(raw);
@@ -89,7 +108,17 @@ export default function CheckInPage() {
                 showToast("error", "Invalid QR code.");
                 return;
             }
-            await checkIn(data.userId, "QR");
+            // Lookup member then show confirm modal
+            const res = await fetch(`/api/checkin/lookup?q=${data.userId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            const json = await res.json();
+            const member = json.data?.find((m: Member) => m.id === data.userId);
+            if (member) {
+                openConfirm(member, "QR");
+            } else {
+                await checkIn(data.userId, "QR");
+            }
         } catch {
             showToast("error", "Could not read QR code.");
         }
@@ -150,11 +179,10 @@ export default function CheckInPage() {
 
             {/* Tabs */}
             <div className="flex gap-1 rounded-xl border border-gray-800 bg-gray-900 p-1 w-fit">
-                {(["manual", "qr"] as const).map((t) => (
+                {(["manual", "qr", "gymdoor"] as const).map((t) => (
                     <button key={t} onClick={() => setTab(t)}
-                        className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors capitalize ${tab === t ? "bg-indigo-600 text-white" : "text-gray-400 hover:text-white"
-                            }`}>
-                        {t === "manual" ? "Manual Search" : "QR Scan"}
+                        className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${tab === t ? "bg-indigo-600 text-white" : "text-gray-400 hover:text-white"}`}>
+                        {t === "manual" ? "Manual" : t === "qr" ? "QR Scan" : "Gym Door"}
                     </button>
                 ))}
             </div>
@@ -198,7 +226,7 @@ export default function CheckInPage() {
                                             )}
                                         </div>
                                         <button
-                                            onClick={() => checkIn(m.id, "MANUAL")}
+                                            onClick={() => openConfirm(m, "MANUAL")}
                                             className="flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-500 transition-colors">
                                             <UserCheck size={13} /> Check In
                                         </button>
@@ -213,6 +241,11 @@ export default function CheckInPage() {
             {/* QR scan */}
             {tab === "qr" && (
                 <QRScanner onScan={handleQRScan} />
+            )}
+
+            {/* Gym Door */}
+            {tab === "gymdoor" && (
+                <GymDoorTab token={token!} tenantId={tenant?.id ?? ""} onCheckIn={(userId) => checkIn(userId, "GYMDOOR")} showToast={showToast} />
             )}
 
             {/* Today's check-ins */}
@@ -251,6 +284,97 @@ export default function CheckInPage() {
                     </div>
                 )}
             </div>
+
+            {/* Confirm check-in modal */}
+            {confirmMember && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+                    <div className="w-full max-w-sm rounded-2xl border border-gray-800 bg-gray-900 p-6 shadow-2xl space-y-4">
+                        <p className="font-semibold text-white">Confirm Check-In</p>
+                        <div className="rounded-xl bg-gray-950 p-4 space-y-1">
+                            <p className="text-white font-medium">{confirmMember.firstName} {confirmMember.lastName}</p>
+                            <p className="text-sm text-gray-400">{confirmMember.email}</p>
+                            {confirmMember.plan && (
+                                <p className="text-xs text-indigo-400 mt-1">
+                                    {confirmMember.plan}
+                                    {confirmMember.visitsRemaining != null && ` · ${confirmMember.visitsRemaining} visits left`}
+                                </p>
+                            )}
+                            {!confirmMember.plan && (
+                                <p className="text-xs text-red-400 mt-1">No active membership</p>
+                            )}
+                        </div>
+                        <div className="flex gap-3">
+                            <button onClick={() => setConfirmMember(null)}
+                                className="flex-1 rounded-lg border border-gray-700 py-2.5 text-sm text-gray-300 hover:bg-gray-800 transition-colors">
+                                Cancel
+                            </button>
+                            <button onClick={() => confirmCheckIn("MANUAL")} disabled={confirming}
+                                className="flex-1 rounded-lg bg-indigo-600 py-2.5 text-sm font-medium text-white hover:bg-indigo-500 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+                                {confirming
+                                    ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                                    : <><UserCheck size={15} /> Check In</>
+                                }
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
+// ─── Gym Door Tab ─────────────────────────────────────────────────────────────
+
+function GymDoorTab({ token, tenantId, onCheckIn, showToast }: {
+    token: string; tenantId: string;
+    onCheckIn: (userId: string) => void;
+    showToast: (type: "success" | "error", msg: string) => void;
+}) {
+    const [memberId, setMemberId] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    async function handleGymDoor(e: React.FormEvent) {
+        e.preventDefault();
+        if (!memberId) return;
+        setLoading(true);
+        try {
+            const res = await fetch("/api/checkin/gymdoor", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                body: JSON.stringify({ memberId, tenantId }),
+            });
+            const json = await res.json();
+            if (!res.ok) {
+                showToast("error", json.error ?? "Gym Door check-in failed.");
+            } else {
+                onCheckIn(json.data.userId);
+                setMemberId("");
+            }
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    return (
+        <div className="space-y-4 rounded-xl border border-gray-800 bg-gray-900 p-6">
+            <div>
+                <p className="text-sm font-medium text-white">Gym Door API Check-In</p>
+                <p className="text-xs text-gray-500 mt-1">
+                    Enter a member ID to verify access via the Gym Door API and check them in.
+                </p>
+            </div>
+            <form onSubmit={handleGymDoor} className="flex gap-3">
+                <input value={memberId} onChange={(e) => setMemberId(e.target.value)}
+                    placeholder="Member ID or badge number"
+                    className="flex-1 rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-indigo-500" />
+                <button type="submit" disabled={loading || !memberId}
+                    className="flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-500 transition-colors disabled:opacity-50">
+                    {loading
+                        ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                        : <><UserCheck size={14} /> Verify & Check In</>
+                    }
+                </button>
+            </form>
         </div>
     );
 }
