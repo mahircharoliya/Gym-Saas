@@ -80,6 +80,7 @@ model User {
   emailVerified  Boolean   @default(false)
   emailReminders Boolean   @default(true)
   smsReminders   Boolean   @default(false)
+  wellhubUserId  String?   // Wellhub (Gympass) user ID for door access
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 

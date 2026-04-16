@@ -330,25 +330,31 @@ function GymDoorTab({ token, tenantId, onCheckIn, showToast }: {
     onCheckIn: (userId: string) => void;
     showToast: (type: "success" | "error", msg: string) => void;
 }) {
-    const [memberId, setMemberId] = useState("");
+    const [wellhubUserId, setWellhubUserId] = useState("");
     const [loading, setLoading] = useState(false);
 
     async function handleGymDoor(e: React.FormEvent) {
         e.preventDefault();
-        if (!memberId) return;
+        if (!wellhubUserId) return;
         setLoading(true);
         try {
             const res = await fetch("/api/checkin/gymdoor", {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-                body: JSON.stringify({ memberId, tenantId }),
+                body: JSON.stringify({ wellhubUserId, tenantId }),
             });
             const json = await res.json();
             if (!res.ok) {
-                showToast("error", json.error ?? "Gym Door check-in failed.");
+                showToast("error", json.error ?? "Wellhub check-in failed.");
             } else {
-                onCheckIn(json.data.userId);
-                setMemberId("");
+                const { checkIn: ci, membership, wellhubValidated } = json.data;
+                showToast("success",
+                    `✓ ${ci.user.firstName} ${ci.user.lastName} checked in` +
+                    (wellhubValidated ? " via Wellhub" : "") +
+                    (membership?.visitsRemaining != null ? ` · ${membership.visitsRemaining} visits left` : "")
+                );
+                setWellhubUserId("");
+                onCheckIn(ci.user.id);
             }
         } finally {
             setLoading(false);
@@ -358,16 +364,16 @@ function GymDoorTab({ token, tenantId, onCheckIn, showToast }: {
     return (
         <div className="space-y-4 rounded-xl border border-gray-800 bg-gray-900 p-6">
             <div>
-                <p className="text-sm font-medium text-white">Gym Door API Check-In</p>
+                <p className="text-sm font-medium text-white">Wellhub / Gympass Door Check-In</p>
                 <p className="text-xs text-gray-500 mt-1">
-                    Enter a member ID to verify access via the Gym Door API and check them in.
+                    Enter the member&apos;s Wellhub user ID (from their credential/QR) to validate access and check them in.
                 </p>
             </div>
             <form onSubmit={handleGymDoor} className="flex gap-3">
-                <input value={memberId} onChange={(e) => setMemberId(e.target.value)}
-                    placeholder="Member ID or badge number"
+                <input value={wellhubUserId} onChange={(e) => setWellhubUserId(e.target.value)}
+                    placeholder="Wellhub User ID"
                     className="flex-1 rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-indigo-500" />
-                <button type="submit" disabled={loading || !memberId}
+                <button type="submit" disabled={loading || !wellhubUserId}
                     className="flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-500 transition-colors disabled:opacity-50">
                     {loading
                         ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
@@ -375,6 +381,13 @@ function GymDoorTab({ token, tenantId, onCheckIn, showToast }: {
                     }
                 </button>
             </form>
+            <div className="rounded-lg bg-gray-950 px-4 py-3 text-xs text-gray-500 space-y-1">
+                <p className="font-medium text-gray-400">How it works:</p>
+                <p>1. Member presents their Wellhub credential at the door</p>
+                <p>2. Enter their Wellhub User ID above</p>
+                <p>3. Wellhub validates their plan — access is granted or denied</p>
+                <p>4. Check-in is recorded in your system</p>
+            </div>
         </div>
     );
 }

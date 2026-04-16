@@ -2,47 +2,50 @@ import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/routeGuard";
 import { errorResponse, successResponse } from "@/lib/api";
+import { validateWellhubAccess } from "@/lib/wellhub";
 import { Role } from "@prisma/client";
 
-const GYMDOOR_API_URL = process.env.GYMDOOR_API_URL ?? "https://api.gymdoor.io/v1";
-const GYMDOOR_API_KEY = process.env.GYMDOOR_API_KEY ?? "";
-
-// POST /api/checkin/gymdoor
+/**
+ * POST /api/checkin/gymdoor
+ *
+ * Validates a member via Wellhub (Gympass) Access Control API,
+ * then records the check-in in our DB.
+ *
+ * Body: { wellhubUserId } — the Wellhub user ID from the member's credential
+ *
+ * Flow:
+ * 1. Call Wellhub API to validate access
+ * 2. If allowed, find the matching user in our DB
+ * 3. Validate active membership
+ * 4. Record check-in with method = "GYMDOOR"
+ */
 export async function POST(req: NextRequest) {
     const { error, payload } = requireRole(req, Role.TRAINER);
     if (error) return error;
 
-    const { memberId } = await req.json();
-    if (!memberId) return errorResponse("memberId is required.");
+    const { wellhubUserId, localUserId } = await req.json();
 
-    // ── Call Gym Door API to verify access ────────────────────────────────────
-    let gymDoorUserId: string | null = null;
+    if (!wellhubUserId && !localUserId)
+        return errorResponse("wellhubUserId or localUserId is required.");
 
-    if (GYMDOOR_API_KEY) {
-        try {
-            const gdRes = await fetch(`${GYMDOOR_API_URL}/members/${memberId}/access`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${GYMDOOR_API_KEY}`,
-                },
-                body: JSON.stringify({ facilityId: payload!.tenantId }),
-            });
+    // ── Step 1: Validate via Wellhub ──────────────────────────────────────────
+    if (wellhubUserId) {
+        const wellhubResult = await validateWellhubAccess(wellhubUserId);
 
-            if (!gdRes.ok) {
-                const gdJson = await gdRes.json().catch(() => ({}));
-                return errorResponse(gdJson.message ?? "Gym Door denied access.", 403);
-            }
+        if (!wellhubResult.success) {
+            return errorResponse(wellhubResult.error ?? "Wellhub API error.", 502);
+        }
 
-            const gdJson = await gdRes.json();
-            gymDoorUserId = gdJson.userId ?? memberId;
-        } catch {
-            return errorResponse("Could not reach Gym Door API.", 502);
+        if (!wellhubResult.allowed) {
+            return errorResponse(
+                wellhubResult.denialReason ?? "Access denied by Wellhub.",
+                403
+            );
         }
     }
 
-    // ── Find user in our DB by Gym Door member ID or our userId ───────────────
-    const lookupId = gymDoorUserId ?? memberId;
+    // ── Step 2: Find user in our DB ───────────────────────────────────────────
+    const lookupId = localUserId ?? wellhubUserId;
 
     const user = await prisma.user.findFirst({
         where: {
@@ -54,9 +57,14 @@ export async function POST(req: NextRequest) {
         },
     });
 
-    if (!user) return errorResponse("Member not found in system.", 404);
+    if (!user) {
+        return errorResponse(
+            "Member not found in system. They may need to register first.",
+            404
+        );
+    }
 
-    // ── Validate active membership ────────────────────────────────────────────
+    // ── Step 3: Validate active membership ───────────────────────────────────
     const activeMembership = await prisma.memberProduct.findFirst({
         where: {
             userId: user.id,
@@ -64,34 +72,50 @@ export async function POST(req: NextRequest) {
             status: "ACTIVE",
             OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
         },
-        include: { product: { select: { name: true, membershipType: true } } },
+        include: {
+            product: { select: { name: true, membershipType: true } },
+        },
     });
 
-    if (!activeMembership) return errorResponse("Member does not have an active membership.", 403);
+    if (!activeMembership) {
+        return errorResponse("Member does not have an active membership.", 403);
+    }
 
-    // Decrement visits if LIMITED_VISITS
+    // Decrement visits for LIMITED_VISITS
     if (
         activeMembership.product.membershipType === "LIMITED_VISITS" &&
         activeMembership.visitsRemaining !== null &&
         activeMembership.visitsRemaining !== undefined
     ) {
-        if (activeMembership.visitsRemaining <= 0)
+        if (activeMembership.visitsRemaining <= 0) {
             return errorResponse("Member has no visits remaining.", 403);
+        }
         await prisma.memberProduct.update({
             where: { id: activeMembership.id },
             data: { visitsRemaining: { decrement: 1 } },
         });
     }
 
-    // ── Record check-in ───────────────────────────────────────────────────────
+    // ── Step 4: Record check-in ───────────────────────────────────────────────
     const checkIn = await prisma.checkIn.create({
-        data: { tenantId: payload!.tenantId, userId: user.id, method: "GYMDOOR" },
-        include: { user: { select: { id: true, firstName: true, lastName: true, email: true } } },
+        data: {
+            tenantId: payload!.tenantId,
+            userId: user.id,
+            method: "GYMDOOR",
+            note: wellhubUserId ? `Wellhub ID: ${wellhubUserId}` : undefined,
+        },
+        include: {
+            user: { select: { id: true, firstName: true, lastName: true, email: true } },
+        },
     });
 
     return successResponse({
         userId: user.id,
         checkIn,
-        membership: { plan: activeMembership.product.name },
+        membership: {
+            plan: activeMembership.product.name,
+            visitsRemaining: activeMembership.visitsRemaining,
+        },
+        wellhubValidated: !!wellhubUserId,
     }, 201);
 }
