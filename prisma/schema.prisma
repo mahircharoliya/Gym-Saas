@@ -51,6 +51,9 @@ model User {
   @@unique([tenantId, email])
   @@index([tenantId])
   @@index([email])
+
+  emailReminders  Boolean  @default(true)
+  smsReminders    Boolean  @default(false)
 }
 
 model Invite {
