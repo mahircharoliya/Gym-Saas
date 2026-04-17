@@ -18,13 +18,13 @@ export async function GET(req: NextRequest, { params }: Params) {
     const url = `${process.env.NEXT_PUBLIC_APP_URL}/join/${form.slug}`;
 
     const buffer = await QRCode.toBuffer(url, {
-        type: "png",
+        type: "png" as const,
         width: 400,
         margin: 2,
         color: { dark: "#000000", light: "#ffffff" },
     });
 
-    return new NextResponse(buffer, {
+    return new NextResponse(new Uint8Array(buffer), {
         headers: {
             "Content-Type": "image/png",
             "Content-Disposition": `attachment; filename="qr-${form.slug}.png"`,

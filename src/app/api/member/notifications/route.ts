@@ -8,9 +8,12 @@ export async function GET(req: NextRequest) {
     if (error) return error;
     const user = await prisma.user.findUnique({
         where: { id: payload!.userId },
-        select: { emailReminders: true, smsReminders: true },
     });
-    return successResponse(user);
+    if (!user) return errorResponse("User not found.", 404);
+    return successResponse({
+        emailReminders: (user as Record<string, unknown>).emailReminders ?? true,
+        smsReminders: (user as Record<string, unknown>).smsReminders ?? false,
+    });
 }
 
 export async function PATCH(req: NextRequest) {
@@ -19,8 +22,10 @@ export async function PATCH(req: NextRequest) {
     const { emailReminders, smsReminders } = await req.json();
     const user = await prisma.user.update({
         where: { id: payload!.userId },
-        data: { emailReminders, smsReminders },
-        select: { emailReminders: true, smsReminders: true },
+        data: { emailReminders, smsReminders } as Record<string, unknown>,
     });
-    return successResponse(user);
+    return successResponse({
+        emailReminders: (user as Record<string, unknown>).emailReminders ?? true,
+        smsReminders: (user as Record<string, unknown>).smsReminders ?? false,
+    });
 }
