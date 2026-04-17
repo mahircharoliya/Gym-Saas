@@ -233,3 +233,50 @@ export async function cancelSubscription(
         });
     });
 }
+
+// ─── Refund transaction ───────────────────────────────────────────────────────
+
+export async function refundTransaction(
+    transactionId: string,
+    amount: number
+): Promise<{ success: boolean; error?: string }> {
+    return new Promise((resolve) => {
+        const creditCard = new ApiContracts.CreditCardType();
+        creditCard.setCardNumber("XXXX");
+        creditCard.setExpirationDate("XXXX");
+
+        const paymentType = new ApiContracts.PaymentType();
+        paymentType.setCreditCard(creditCard);
+
+        const transactionRequest = new ApiContracts.TransactionRequestType();
+        transactionRequest.setTransactionType(ApiContracts.TransactionTypeEnum.REFUNDTRANSACTION);
+        transactionRequest.setAmount(amount.toFixed(2));
+        transactionRequest.setPayment(paymentType);
+        transactionRequest.setRefTransId(transactionId);
+
+        const request = new ApiContracts.CreateTransactionRequest();
+        request.setMerchantAuthentication(getMerchantAuth());
+        request.setTransactionRequest(transactionRequest);
+
+        const ctrl = new ApiControllers.CreateTransactionController(request.getJSON());
+        ctrl.setEnvironment(getEnvironment());
+
+        ctrl.execute(() => {
+            const response = ctrl.getResponse();
+            if (
+                response?.messages?.resultCode === "Ok" &&
+                response?.transactionResponse?.responseCode === "1"
+            ) {
+                resolve({ success: true });
+            } else {
+                resolve({
+                    success: false,
+                    error:
+                        response?.transactionResponse?.errors?.error?.[0]?.errorText ??
+                        response?.messages?.message?.[0]?.text ??
+                        "Refund failed.",
+                });
+            }
+        });
+    });
+}
