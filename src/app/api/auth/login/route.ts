@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
             include: { tenant: true },
         });
 
-        if (!user) {
+        if (!user || !user.hashedPassword) {
             return errorResponse("Invalid email or password.", 401);
         }
 
