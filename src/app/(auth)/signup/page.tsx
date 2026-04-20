@@ -29,7 +29,7 @@ export default function SignupPage() {
         lastName: "",
         email: "",
         gymName: "",
-        role: "ADMIN",
+        role: "TRAINER",
         password: "",
         confirmPassword: "",
     });
@@ -122,8 +122,6 @@ export default function SignupPage() {
                                 onChange={(e) => setForm((f) => ({ ...f, role: e.target.value }))}
                                 className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5 text-sm text-white outline-none transition hover:border-gray-600 focus:ring-2 focus:ring-indigo-500"
                             >
-                                <option value="ADMIN">Admin — Full access</option>
-                                <option value="MANAGER">Manager — No invites</option>
                                 <option value="TRAINER">Trainer — Calendar & settings</option>
                                 <option value="MEMBER">Member — Limited access</option>
                             </select>
