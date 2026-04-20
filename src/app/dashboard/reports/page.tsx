@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import {
-    Users, TrendingUp, CreditCard, Activity,
+    Users, TrendingUp, CreditCard,
     UserMinus, BarChart3, RefreshCw,
 } from "lucide-react";
 import StatCard from "@/components/ui/StatCard";
@@ -51,7 +51,10 @@ export default function ReportsPage() {
         setLoading(false);
     }, [token, range]);
 
-    useEffect(() => { fetchAnalytics(); }, [fetchAnalytics]);
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchAnalytics();
+    }, [fetchAnalytics]);
 
     // Format date labels for chart
     function fmtDate(d: string) {

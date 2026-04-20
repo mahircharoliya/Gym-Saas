@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/routeGuard";
-import { errorResponse, successResponse } from "@/lib/api";
+import { successResponse } from "@/lib/api";
 
 // GET /api/member/memberships — active + past plans
 export async function GET(req: NextRequest) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
 import ClassModal from "./ClassModal";
@@ -33,8 +33,11 @@ export default function ClassesPage() {
     const [detailClass, setDetailClass] = useState<GymClass | null>(null);
     const [defaultStart, setDefaultStart] = useState<Date | null>(null);
 
-    const weekEnd = new Date(weekStart);
-    weekEnd.setDate(weekEnd.getDate() + 7);
+    const weekEnd = useMemo(() => {
+        const d = new Date(weekStart);
+        d.setDate(d.getDate() + 7);
+        return d;
+    }, [weekStart]);
 
     const fetchClasses = useCallback(async () => {
         setLoading(true);
@@ -45,9 +48,12 @@ export default function ClassesPage() {
         const json = await res.json();
         if (res.ok) setClasses(json.data);
         setLoading(false);
-    }, [token, weekStart]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [token, weekStart, weekEnd]);
 
-    useEffect(() => { fetchClasses(); }, [fetchClasses]);
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchClasses();
+    }, [fetchClasses]);
 
     function prevWeek() { setWeekStart((d) => { const n = new Date(d); n.setDate(n.getDate() - 7); return n; }); }
     function nextWeek() { setWeekStart((d) => { const n = new Date(d); n.setDate(n.getDate() + 7); return n; }); }

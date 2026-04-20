@@ -55,12 +55,18 @@ export default function MembersPage() {
             setPages(json.data.pages);
         }
         setLoading(false);
-    }, [token, page, search, roleFilter]);
+    }, [token, page, search, roleFilter, sortBy]);
 
-    useEffect(() => { fetchMembers(); }, [fetchMembers]);
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchMembers();
+    }, [fetchMembers]);
 
     // Reset page on filter change
-    useEffect(() => { setPage(1); }, [search, roleFilter, sortBy]);
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setPage(1);
+    }, [search, roleFilter, sortBy]);
 
     function toggleSelect(id: string) {
         setSelected((s) => s.includes(id) ? s.filter((x) => x !== id) : [...s, id]);

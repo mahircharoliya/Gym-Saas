@@ -25,7 +25,7 @@ const EMPTY: TenantSettings = {
 };
 
 export default function GeneralSettingsPage() {
-    const { token, tenant, login, user } = useAuth();
+    const { token, login, user } = useAuth();
     const [form, setForm] = useState<TenantSettings>(EMPTY);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);

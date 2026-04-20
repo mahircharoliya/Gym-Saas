@@ -48,6 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (token && user && tenant) {
             // Restore cookie in case it expired
             document.cookie = `token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setState({
                 token,
                 user: JSON.parse(user),

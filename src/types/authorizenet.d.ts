@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 declare module "authorizenet/lib/apicontracts" {
     const ApiContracts: any;
     export default ApiContracts;

@@ -52,7 +52,10 @@ export default function ProductsPage() {
         setLoading(false);
     }, [token]);
 
-    useEffect(() => { fetchProducts(); }, [fetchProducts]);
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchProducts();
+    }, [fetchProducts]);
 
     async function archive(id: string) {
         if (!confirm("Archive this product?")) return;

@@ -2,10 +2,10 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { TrendingUp, DollarSign, RefreshCw, BarChart3, AlertCircle } from "lucide-react";
+import { TrendingUp, DollarSign, RefreshCw, BarChart3 } from "lucide-react";
 import StatCard from "@/components/ui/StatCard";
 import {
-    AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
+    AreaChart, Area, PieChart, Pie, Cell,
     XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
 } from "recharts";
 
@@ -28,7 +28,10 @@ export default function FinancialAnalyticsPage() {
         setLoading(false);
     }, [token, range]);
 
-    useEffect(() => { fetch_(); }, [fetch_]);
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetch_();
+    }, [fetch_]);
 
     const lifetime = data?.lifetime as Record<string, unknown> | undefined;
     const rangeData = data?.range as Record<string, unknown> | undefined;

@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { Search, LogIn, Building2 } from "lucide-react";
-import Input from "@/components/ui/Input";
 
 interface Tenant {
     id: string; name: string; slug: string; createdAt: string;
@@ -31,7 +30,10 @@ export default function SuperAdminPage() {
         setLoading(false);
     }, [token, search]);
 
-    useEffect(() => { fetchTenants(); }, [fetchTenants]);
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchTenants();
+    }, [fetchTenants]);
 
     // Redirect non-super-admins
     useEffect(() => {

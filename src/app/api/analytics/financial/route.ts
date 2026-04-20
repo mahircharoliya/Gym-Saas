@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/routeGuard";
-import { errorResponse, successResponse } from "@/lib/api";
+import { successResponse } from "@/lib/api";
 import { Role } from "@prisma/client";
 
 export async function GET(req: NextRequest) {

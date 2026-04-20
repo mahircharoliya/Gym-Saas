@@ -48,11 +48,15 @@ export default function CheckInPage() {
         if (res.ok) setTodayCheckIns(json.data);
     }, [token]);
 
-    useEffect(() => { fetchToday(); }, [fetchToday]);
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchToday();
+    }, [fetchToday]);
 
     // Debounced member search
     useEffect(() => {
         if (debounceRef.current) clearTimeout(debounceRef.current);
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (query.length < 2) { setResults([]); return; }
         debounceRef.current = setTimeout(async () => {
             setSearching(true);
@@ -85,7 +89,7 @@ export default function CheckInPage() {
         fetchToday();
     }
 
-    function openConfirm(m: Member, method: "MANUAL" | "QR") {
+    function openConfirm(m: Member) {
         const plan = m.memberProducts[0];
         setConfirmMember({
             id: m.id, firstName: m.firstName, lastName: m.lastName, email: m.email,
@@ -115,7 +119,7 @@ export default function CheckInPage() {
             const json = await res.json();
             const member = json.data?.find((m: Member) => m.id === data.userId);
             if (member) {
-                openConfirm(member, "QR");
+                openConfirm(member);
             } else {
                 await checkIn(data.userId, "QR");
             }
@@ -226,7 +230,7 @@ export default function CheckInPage() {
                                             )}
                                         </div>
                                         <button
-                                            onClick={() => openConfirm(m, "MANUAL")}
+                                            onClick={() => openConfirm(m)}
                                             className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-black hover:bg-blue-500 transition-colors">
                                             <UserCheck size={13} /> Check In
                                         </button>

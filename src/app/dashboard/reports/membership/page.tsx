@@ -5,7 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Users, TrendingDown, RefreshCw, Award, Clock } from "lucide-react";
 import StatCard from "@/components/ui/StatCard";
 import {
-  AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
+  AreaChart, Area, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
 } from "recharts";
 
@@ -28,7 +28,10 @@ export default function MembershipAnalyticsPage() {
     setLoading(false);
   }, [token, range]);
 
-  useEffect(() => { fetch_(); }, [fetch_]);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetch_();
+  }, [fetch_]);
 
   const lifetime = data?.lifetime as Record<string, unknown> | undefined;
   const rangeData = data?.range as Record<string, unknown> | undefined;
@@ -81,9 +84,9 @@ export default function MembershipAnalyticsPage() {
         <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-3">Period Metrics</p>
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
-            { label: "New Memberships",  value: String(rangeData?.newMemberships ?? "—") },
-            { label: "Renewal Rate",     value: rangeData ? `${rangeData.renewalRate}%` : "—" },
-            { label: "Growth Rate",      value: rangeData ? `${rangeData.growthRate}%` : "—" },
+            { label: "New Memberships", value: String(rangeData?.newMemberships ?? "—") },
+            { label: "Renewal Rate", value: rangeData ? `${rangeData.renewalRate}%` : "—" },
+            { label: "Growth Rate", value: rangeData ? `${rangeData.growthRate}%` : "—" },
             { label: "Inactive Members", value: String(rangeData?.inactiveMembers ?? "—") },
           ].map((s) => (
             <div key={s.label} className="rounded-xl border border-gray-800 bg-white p-5">

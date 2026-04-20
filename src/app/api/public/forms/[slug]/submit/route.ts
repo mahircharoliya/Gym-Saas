@@ -15,7 +15,7 @@ export async function POST(req: NextRequest, { params }: Params) {
     });
     if (!form) return errorResponse("Form not found or inactive.", 404);
 
-    const { firstName, lastName, email, password, productId, acceptedWaiverIds, phone, address } =
+    const { firstName, lastName, email, password, productId, acceptedWaiverIds, phone } =
         await req.json();
 
     if (!firstName || !lastName || !email || !password)

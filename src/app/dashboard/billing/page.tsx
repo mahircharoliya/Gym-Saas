@@ -52,7 +52,10 @@ export default function BillingPage() {
         setLoading(false);
     }, [token]);
 
-    useEffect(() => { fetchMemberships(); }, [fetchMemberships]);
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        fetchMemberships();
+    }, [fetchMemberships]);
 
     async function cancel(id: string) {
         if (!confirm("Cancel this membership? This cannot be undone.")) return;

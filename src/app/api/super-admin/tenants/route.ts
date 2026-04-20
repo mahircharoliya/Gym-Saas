@@ -1,12 +1,12 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/routeGuard";
-import { errorResponse, successResponse } from "@/lib/api";
+import { successResponse } from "@/lib/api";
 import { Role } from "@prisma/client";
 
 // GET /api/super-admin/tenants — all gyms + their admin users
 export async function GET(req: NextRequest) {
-    const { error, payload } = requireRole(req, Role.SUPER_ADMIN);
+    const { error } = requireRole(req, Role.SUPER_ADMIN);
     if (error) return error;
 
     const { searchParams } = new URL(req.url);

@@ -225,7 +225,7 @@ export default function JoinPage({ params }: { params: Promise<{ slug: string }>
                                     return setError("All fields are required.");
                                 if (form.password.length < 8) return setError("Password must be at least 8 characters.");
                                 setError("");
-                                data.waivers.length > 0 ? setStep("waiver") : submit();
+                                if (data.waivers.length > 0) { setStep("waiver"); } else { submit(); }
                             }}>
                                 {data.waivers.length > 0 ? "Continue" : "Create Account"}
                             </Button>
