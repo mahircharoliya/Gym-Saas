@@ -62,11 +62,11 @@ function AcceptInviteForm() {
         <div className="flex min-h-screen items-center justify-center px-4 py-12">
             <div className="w-full max-w-sm">
                 <div className="mb-8 text-center">
-                    <span className="text-2xl font-bold text-indigo-400">GymSaaS</span>
+                    <span className="text-2xl font-bold text-blue-400">GymSaaS</span>
                     <p className="mt-1 text-sm text-gray-400">Accept your invitation</p>
                 </div>
 
-                <div className="rounded-2xl border border-gray-800 bg-gray-900 p-8 shadow-xl">
+                <div className="rounded-2xl border border-gray-800 bg-white p-8 shadow-xl">
                     {error && (
                         <div className="mb-4 rounded-lg bg-red-500/10 border border-red-500/30 px-4 py-3 text-sm text-red-400">
                             {error}
@@ -85,7 +85,7 @@ function AcceptInviteForm() {
                                     type={showPw ? "text" : "password"}
                                     placeholder="Min 8 characters"
                                     {...field("password")}
-                                    className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5 pr-10 text-sm text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full rounded-lg border border-gray-700 bg-white px-4 py-2.5 pr-10 text-sm text-black placeholder-gray-500 outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                                 <button type="button" onClick={() => setShowPw((v) => !v)}
                                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300">
@@ -118,3 +118,4 @@ export default function AcceptInvitePage() {
         </Suspense>
     );
 }
+

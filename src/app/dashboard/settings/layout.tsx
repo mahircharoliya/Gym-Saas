@@ -21,7 +21,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-lg font-semibold text-white">Settings</h2>
+                <h2 className="text-lg font-semibold text-black">Settings</h2>
                 <p className="text-sm text-gray-400 mt-0.5">Manage your gym and account settings.</p>
             </div>
 
@@ -35,8 +35,8 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
                             className={clsx(
                                 "px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors",
                                 active
-                                    ? "border-indigo-500 text-white"
-                                    : "border-transparent text-gray-400 hover:text-white"
+                                    ? "border-blue-500 text-black"
+                                    : "border-transparent text-gray-400 hover:text-black"
                             )}>
                             {tab.label}
                         </Link>
@@ -48,3 +48,4 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
         </div>
     );
 }
+

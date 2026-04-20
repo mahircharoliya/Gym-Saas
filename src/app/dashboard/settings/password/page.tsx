@@ -43,8 +43,8 @@ export default function PasswordPage() {
 
     return (
         <div className="max-w-md">
-            <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
-                <p className="text-sm font-medium text-white mb-4">Change Password</p>
+            <div className="rounded-xl border border-gray-800 bg-white p-6">
+                <p className="text-sm font-medium text-black mb-4">Change Password</p>
                 {error && <p className="mb-4 text-sm text-red-400">{error}</p>}
                 {success && <p className="mb-4 text-sm text-emerald-400">{success}</p>}
 
@@ -78,7 +78,7 @@ function PasswordField({
             <div className="relative">
                 <input type={show ? "text" : "password"} value={value} onChange={onChange}
                     placeholder="••••••••"
-                    className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5 pr-10 text-sm text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-indigo-500" />
+                    className="w-full rounded-lg border border-gray-700 bg-white px-4 py-2.5 pr-10 text-sm text-black placeholder-gray-500 outline-none focus:ring-2 focus:ring-blue-500" />
                 <button type="button" onClick={onToggle}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300">
                     {show ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -87,3 +87,4 @@ function PasswordField({
         </div>
     );
 }
+

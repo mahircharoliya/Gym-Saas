@@ -81,10 +81,10 @@ export default function WaiversPage() {
         return (
             <div className="max-w-3xl space-y-4">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-semibold text-white">
+                    <h2 className="text-lg font-semibold text-black">
                         {editing ? "Edit Waiver" : "New Waiver"}
                     </h2>
-                    <button onClick={() => setCreating(false)} className="text-sm text-gray-400 hover:text-white">
+                    <button onClick={() => setCreating(false)} className="text-sm text-gray-400 hover:text-black">
                         ← Back
                     </button>
                 </div>
@@ -99,7 +99,7 @@ export default function WaiversPage() {
                     <span className="text-xs text-gray-500">Insert token:</span>
                     {TOKENS.map((t) => (
                         <button key={t} onClick={() => insertToken(t)}
-                            className="rounded bg-gray-800 px-2 py-1 text-xs text-indigo-400 hover:bg-gray-700 transition-colors font-mono">
+                            className="rounded bg-gray-800 px-2 py-1 text-xs text-blue-400 hover:bg-gray-700 transition-colors font-mono">
                             {t}
                         </button>
                     ))}
@@ -108,17 +108,17 @@ export default function WaiversPage() {
                 {/* Editor / Preview toggle */}
                 <div className="flex gap-2">
                     <button onClick={() => setPreview(false)}
-                        className={`text-sm px-3 py-1.5 rounded-lg transition-colors ${!preview ? "bg-indigo-600 text-white" : "text-gray-400 hover:text-white"}`}>
+                        className={`text-sm px-3 py-1.5 rounded-lg transition-colors ${!preview ? "bg-blue-600 text-black" : "text-gray-400 hover:text-black"}`}>
                         Editor
                     </button>
                     <button onClick={() => setPreview(true)}
-                        className={`text-sm px-3 py-1.5 rounded-lg transition-colors ${preview ? "bg-indigo-600 text-white" : "text-gray-400 hover:text-white"}`}>
+                        className={`text-sm px-3 py-1.5 rounded-lg transition-colors ${preview ? "bg-blue-600 text-black" : "text-gray-400 hover:text-black"}`}>
                         Preview
                     </button>
                 </div>
 
                 {preview ? (
-                    <div className="rounded-xl border border-gray-700 bg-gray-900 p-6 text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">
+                    <div className="rounded-xl border border-gray-700 bg-white p-6 text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">
                         {renderWaiver(body, { firstName: "John", lastName: "Doe" })}
                     </div>
                 ) : (
@@ -126,7 +126,7 @@ export default function WaiversPage() {
                         rows={14}
                         value={body}
                         onChange={(e) => setBody(e.target.value)}
-                        className="w-full rounded-xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-indigo-500 resize-none font-mono"
+                        className="w-full rounded-xl border border-gray-700 bg-white px-4 py-3 text-sm text-black placeholder-gray-500 outline-none focus:ring-2 focus:ring-blue-500 resize-none font-mono"
                     />
                 )}
 
@@ -144,7 +144,7 @@ export default function WaiversPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-lg font-semibold text-white">Waivers</h2>
+                    <h2 className="text-lg font-semibold text-black">Waivers</h2>
                     <p className="text-sm text-gray-400 mt-0.5">Build and manage liability waivers.</p>
                 </div>
                 <Button onClick={openCreate} className="w-auto gap-2 px-4">
@@ -160,13 +160,13 @@ export default function WaiversPage() {
             ) : (
                 <div className="space-y-3">
                     {waivers.map((w) => (
-                        <div key={w.id} className="flex items-center justify-between rounded-xl border border-gray-800 bg-gray-900 px-5 py-4">
+                        <div key={w.id} className="flex items-center justify-between rounded-xl border border-gray-800 bg-white px-5 py-4">
                             <div>
-                                <p className="text-sm font-medium text-white">{w.title}</p>
+                                <p className="text-sm font-medium text-black">{w.title}</p>
                                 <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{w.body.slice(0, 80)}…</p>
                             </div>
                             <div className="flex gap-3 ml-4">
-                                <button onClick={() => openEdit(w)} className="text-gray-400 hover:text-white transition-colors">
+                                <button onClick={() => openEdit(w)} className="text-gray-400 hover:text-black transition-colors">
                                     <Pencil size={15} />
                                 </button>
                                 <button onClick={() => deleteWaiver(w.id)} className="text-gray-400 hover:text-red-400 transition-colors">
@@ -180,3 +180,4 @@ export default function WaiversPage() {
         </div>
     );
 }
+

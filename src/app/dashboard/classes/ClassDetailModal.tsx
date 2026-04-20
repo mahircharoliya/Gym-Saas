@@ -57,19 +57,19 @@ export default function ClassDetailModal({ gymClass: c, token, userId, canManage
     const end = new Date(c.endAt);
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-            <div className="w-full max-w-md rounded-2xl border border-gray-800 bg-gray-900 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/60 px-4">
+            <div className="w-full max-w-md rounded-2xl border border-gray-800 bg-white shadow-2xl">
                 {/* Color bar */}
                 <div className="h-1.5 rounded-t-2xl" style={{ backgroundColor: c.color }} />
 
                 <div className="flex items-start justify-between px-6 pt-5 pb-2">
                     <div>
-                        <p className="font-semibold text-white text-lg">{c.name}</p>
+                        <p className="font-semibold text-black text-lg">{c.name}</p>
                         {c.status === "CANCELLED" && (
                             <span className="text-xs text-red-400 font-medium">CANCELLED</span>
                         )}
                     </div>
-                    <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors mt-0.5">
+                    <button onClick={onClose} className="text-gray-500 hover:text-black transition-colors mt-0.5">
                         <X size={18} />
                     </button>
                 </div>
@@ -160,3 +160,4 @@ export default function ClassDetailModal({ gymClass: c, token, userId, canManage
         </div>
     );
 }
+

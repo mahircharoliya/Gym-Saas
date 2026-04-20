@@ -63,7 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
         localStorage.setItem("tenant", JSON.stringify(tenant));
-        // Also set cookie so middleware can read it
+        // Also set cookie so proxy can read it
         document.cookie = `token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
         setState({ token, user, tenant, loading: false });
     }
@@ -90,3 +90,4 @@ export function useAuth() {
     if (!ctx) throw new Error("useAuth must be used within AuthProvider");
     return ctx;
 }
+

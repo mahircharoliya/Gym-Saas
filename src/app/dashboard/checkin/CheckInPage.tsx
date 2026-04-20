@@ -139,15 +139,15 @@ export default function CheckInPage() {
         return (
             <div className="max-w-sm mx-auto space-y-6">
                 <div>
-                    <h2 className="text-lg font-semibold text-white">Check-In QR Code</h2>
+                    <h2 className="text-lg font-semibold text-black">Check-In QR Code</h2>
                     <p className="text-sm text-gray-400 mt-0.5">Show this at the front desk to check in.</p>
                 </div>
-                <div className="rounded-2xl border border-gray-800 bg-gray-900 p-8 flex flex-col items-center gap-6">
+                <div className="rounded-2xl border border-gray-800 bg-white p-8 flex flex-col items-center gap-6">
                     <div className="rounded-xl bg-white p-5">
                         <QRCode id="member-qr-ci" value={qrValue} size={200} />
                     </div>
                     <div className="text-center">
-                        <p className="font-semibold text-white">{user.firstName} {user.lastName}</p>
+                        <p className="font-semibold text-black">{user.firstName} {user.lastName}</p>
                         <p className="text-sm text-gray-400">{tenant?.name}</p>
                     </div>
                     <button onClick={downloadSVG}
@@ -162,7 +162,7 @@ export default function CheckInPage() {
     return (
         <div className="space-y-6 max-w-2xl">
             <div>
-                <h2 className="text-lg font-semibold text-white">Check-In</h2>
+                <h2 className="text-lg font-semibold text-black">Check-In</h2>
                 <p className="text-sm text-gray-400 mt-0.5">Manually search or scan a member QR code.</p>
             </div>
 
@@ -178,10 +178,10 @@ export default function CheckInPage() {
             )}
 
             {/* Tabs */}
-            <div className="flex gap-1 rounded-xl border border-gray-800 bg-gray-900 p-1 w-fit">
+            <div className="flex gap-1 rounded-xl border border-gray-800 bg-white p-1 w-fit">
                 {(["manual", "qr", "gymdoor"] as const).map((t) => (
                     <button key={t} onClick={() => setTab(t)}
-                        className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${tab === t ? "bg-indigo-600 text-white" : "text-gray-400 hover:text-white"}`}>
+                        className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${tab === t ? "bg-blue-600 text-black" : "text-gray-400 hover:text-black"}`}>
                         {t === "manual" ? "Manual" : t === "qr" ? "QR Scan" : "Gym Door"}
                     </button>
                 ))}
@@ -196,7 +196,7 @@ export default function CheckInPage() {
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder="Search by name or email…"
-                            className="w-full rounded-lg border border-gray-700 bg-gray-900 pl-9 pr-4 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="w-full rounded-lg border border-gray-700 bg-white pl-9 pr-4 py-2.5 text-sm text-black placeholder-gray-500 outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
 
@@ -205,19 +205,19 @@ export default function CheckInPage() {
                     )}
 
                     {results.length > 0 && (
-                        <div className="rounded-xl border border-gray-800 bg-gray-900 overflow-hidden">
+                        <div className="rounded-xl border border-gray-800 bg-white overflow-hidden">
                             {results.map((m) => {
                                 const plan = m.memberProducts[0];
                                 return (
                                     <div key={m.id}
                                         className="flex items-center justify-between px-4 py-3 border-b border-gray-800 last:border-0 hover:bg-gray-800/40 transition-colors">
                                         <div>
-                                            <p className="text-sm font-medium text-white">
+                                            <p className="text-sm font-medium text-black">
                                                 {m.firstName} {m.lastName}
                                             </p>
                                             <p className="text-xs text-gray-500">{m.email}</p>
                                             {plan ? (
-                                                <p className="text-xs text-indigo-400 mt-0.5">
+                                                <p className="text-xs text-blue-400 mt-0.5">
                                                     {plan.product.name}
                                                     {plan.visitsRemaining != null && ` · ${plan.visitsRemaining} visits left`}
                                                 </p>
@@ -227,7 +227,7 @@ export default function CheckInPage() {
                                         </div>
                                         <button
                                             onClick={() => openConfirm(m, "MANUAL")}
-                                            className="flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-500 transition-colors">
+                                            className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-black hover:bg-blue-500 transition-colors">
                                             <UserCheck size={13} /> Check In
                                         </button>
                                     </div>
@@ -259,13 +259,13 @@ export default function CheckInPage() {
                     <div className="space-y-2">
                         {todayCheckIns.map((ci) => (
                             <div key={ci.id}
-                                className="flex items-center justify-between rounded-lg border border-gray-800 bg-gray-900 px-4 py-3">
+                                className="flex items-center justify-between rounded-lg border border-gray-800 bg-white px-4 py-3">
                                 <div className="flex items-center gap-3">
                                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/10 text-xs font-bold text-emerald-400 shrink-0">
                                         {ci.user.firstName[0]}{ci.user.lastName[0]}
                                     </div>
                                     <div>
-                                        <p className="text-sm font-medium text-white">
+                                        <p className="text-sm font-medium text-black">
                                             {ci.user.firstName} {ci.user.lastName}
                                         </p>
                                         <p className="text-xs text-gray-500">{ci.user.email}</p>
@@ -275,7 +275,7 @@ export default function CheckInPage() {
                                     <p className="text-xs text-gray-500">
                                         {new Date(ci.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                                     </p>
-                                    <span className={`text-xs ${ci.method === "QR" ? "text-indigo-400" : "text-gray-500"}`}>
+                                    <span className={`text-xs ${ci.method === "QR" ? "text-blue-400" : "text-gray-500"}`}>
                                         {ci.method}
                                     </span>
                                 </div>
@@ -287,14 +287,14 @@ export default function CheckInPage() {
 
             {/* Confirm check-in modal */}
             {confirmMember && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-                    <div className="w-full max-w-sm rounded-2xl border border-gray-800 bg-gray-900 p-6 shadow-2xl space-y-4">
-                        <p className="font-semibold text-white">Confirm Check-In</p>
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/60 px-4">
+                    <div className="w-full max-w-sm rounded-2xl border border-gray-800 bg-white p-6 shadow-2xl space-y-4">
+                        <p className="font-semibold text-black">Confirm Check-In</p>
                         <div className="rounded-xl bg-gray-950 p-4 space-y-1">
-                            <p className="text-white font-medium">{confirmMember.firstName} {confirmMember.lastName}</p>
+                            <p className="text-black font-medium">{confirmMember.firstName} {confirmMember.lastName}</p>
                             <p className="text-sm text-gray-400">{confirmMember.email}</p>
                             {confirmMember.plan && (
-                                <p className="text-xs text-indigo-400 mt-1">
+                                <p className="text-xs text-blue-400 mt-1">
                                     {confirmMember.plan}
                                     {confirmMember.visitsRemaining != null && ` · ${confirmMember.visitsRemaining} visits left`}
                                 </p>
@@ -309,7 +309,7 @@ export default function CheckInPage() {
                                 Cancel
                             </button>
                             <button onClick={() => confirmCheckIn("MANUAL")} disabled={confirming}
-                                className="flex-1 rounded-lg bg-indigo-600 py-2.5 text-sm font-medium text-white hover:bg-indigo-500 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+                                className="flex-1 rounded-lg bg-blue-600 py-2.5 text-sm font-medium text-black hover:bg-blue-500 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
                                 {confirming
                                     ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                                     : <><UserCheck size={15} /> Check In</>
@@ -362,9 +362,9 @@ function GymDoorTab({ token, tenantId, onCheckIn, showToast }: {
     }
 
     return (
-        <div className="space-y-4 rounded-xl border border-gray-800 bg-gray-900 p-6">
+        <div className="space-y-4 rounded-xl border border-gray-800 bg-white p-6">
             <div>
-                <p className="text-sm font-medium text-white">Wellhub / Gympass Door Check-In</p>
+                <p className="text-sm font-medium text-black">Wellhub / Gympass Door Check-In</p>
                 <p className="text-xs text-gray-500 mt-1">
                     Enter the member&apos;s Wellhub user ID (from their credential/QR) to validate access and check them in.
                 </p>
@@ -372,9 +372,9 @@ function GymDoorTab({ token, tenantId, onCheckIn, showToast }: {
             <form onSubmit={handleGymDoor} className="flex gap-3">
                 <input value={wellhubUserId} onChange={(e) => setWellhubUserId(e.target.value)}
                     placeholder="Wellhub User ID"
-                    className="flex-1 rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-indigo-500" />
+                    className="flex-1 rounded-lg border border-gray-700 bg-white px-4 py-2.5 text-sm text-black placeholder-gray-500 outline-none focus:ring-2 focus:ring-blue-500" />
                 <button type="submit" disabled={loading || !wellhubUserId}
-                    className="flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-500 transition-colors disabled:opacity-50">
+                    className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-black hover:bg-blue-500 transition-colors disabled:opacity-50">
                     {loading
                         ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                         : <><UserCheck size={14} /> Verify & Check In</>
@@ -391,3 +391,4 @@ function GymDoorTab({ token, tenantId, onCheckIn, showToast }: {
         </div>
     );
 }
+

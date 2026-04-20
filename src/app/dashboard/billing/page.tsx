@@ -83,13 +83,13 @@ export default function BillingPage() {
     return (
         <div className="max-w-2xl space-y-6">
             <div>
-                <h2 className="text-lg font-semibold text-white">Billing & Plans</h2>
+                <h2 className="text-lg font-semibold text-black">Billing & Plans</h2>
                 <p className="text-sm text-gray-400 mt-0.5">Manage your memberships and subscriptions.</p>
             </div>
 
             {loading ? (
                 <div className="flex justify-center py-12">
-                    <span className="h-5 w-5 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
+                    <span className="h-5 w-5 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
                 </div>
             ) : (
                 <>
@@ -131,13 +131,13 @@ export default function BillingPage() {
                     )}
 
                     {/* Update payment method */}
-                    <div className="rounded-xl border border-gray-800 bg-gray-900 overflow-hidden">
+                    <div className="rounded-xl border border-gray-800 bg-white overflow-hidden">
                         <button
                             onClick={() => setShowUpdateCard((v) => !v)}
                             className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-gray-800/40 transition-colors">
                             <div className="flex items-center gap-3">
                                 <CreditCard size={16} className="text-gray-400" />
-                                <p className="text-sm font-medium text-white">Update Payment Method</p>
+                                <p className="text-sm font-medium text-black">Update Payment Method</p>
                             </div>
                             {showUpdateCard ? <ChevronUp size={15} className="text-gray-400" /> : <ChevronDown size={15} className="text-gray-400" />}
                         </button>
@@ -171,11 +171,11 @@ function MembershipCard({
     const Icon = style.icon;
 
     return (
-        <div className="rounded-xl border border-gray-800 bg-gray-900 p-5">
+        <div className="rounded-xl border border-gray-800 bg-white p-5">
             <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                        <p className="font-medium text-white">{m.product.name}</p>
+                        <p className="font-medium text-black">{m.product.name}</p>
                         <span className={`flex items-center gap-1 text-xs ${style.color}`}>
                             <Icon size={12} /> {m.status}
                         </span>
@@ -190,7 +190,7 @@ function MembershipCard({
                             <span>Expires {new Date(m.expiresAt).toLocaleDateString()}</span>
                         )}
                         {m.visitsRemaining !== undefined && m.visitsRemaining !== null && (
-                            <span className="text-indigo-400">{m.visitsRemaining} visits left</span>
+                            <span className="text-blue-400">{m.visitsRemaining} visits left</span>
                         )}
                         {m.cancelledAt && (
                             <span>Cancelled {new Date(m.cancelledAt).toLocaleDateString()}</span>
@@ -211,3 +211,4 @@ function MembershipCard({
         </div>
     );
 }
+

@@ -70,7 +70,7 @@ export default function ProductsPage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-lg font-semibold text-white">Products</h2>
+                    <h2 className="text-lg font-semibold text-black">Products</h2>
                     <p className="text-sm text-gray-400 mt-0.5">Manage memberships and plans.</p>
                 </div>
                 <Button onClick={openCreate} className="w-auto gap-2 px-4">
@@ -80,7 +80,7 @@ export default function ProductsPage() {
 
             {loading ? (
                 <div className="flex justify-center py-12">
-                    <span className="h-5 w-5 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
+                    <span className="h-5 w-5 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
                 </div>
             ) : products.length === 0 ? (
                 <div className="rounded-xl border border-dashed border-gray-700 p-12 text-center">
@@ -90,21 +90,21 @@ export default function ProductsPage() {
             ) : (
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                     {products.map((p) => (
-                        <div key={p.id} className="rounded-xl border border-gray-800 bg-gray-900 p-5 flex flex-col gap-3">
+                        <div key={p.id} className="rounded-xl border border-gray-800 bg-white p-5 flex flex-col gap-3">
                             <div className="flex items-start justify-between gap-2">
                                 <div>
-                                    <p className="font-medium text-white">{p.name}</p>
+                                    <p className="font-medium text-black">{p.name}</p>
                                     {p.description && (
                                         <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{p.description}</p>
                                     )}
                                 </div>
-                                <span className="shrink-0 rounded-full bg-indigo-500/10 px-2 py-0.5 text-xs text-indigo-400">
+                                <span className="shrink-0 rounded-full bg-blue-500/10 px-2 py-0.5 text-xs text-blue-400">
                                     {TYPE_LABELS[p.membershipType] ?? p.membershipType}
                                 </span>
                             </div>
 
                             <div className="flex items-end gap-2">
-                                <span className="text-2xl font-bold text-white">${Number(p.price).toFixed(2)}</span>
+                                <span className="text-2xl font-bold text-black">${Number(p.price).toFixed(2)}</span>
                                 {p.comparePrice && (
                                     <span className="text-sm text-gray-500 line-through mb-0.5">
                                         ${Number(p.comparePrice).toFixed(2)}
@@ -126,7 +126,7 @@ export default function ProductsPage() {
                             <div className="flex gap-2 mt-auto pt-2 border-t border-gray-800">
                                 <button
                                     onClick={() => openEdit(p)}
-                                    className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors"
+                                    className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-black transition-colors"
                                 >
                                     <Pencil size={13} /> Edit
                                 </button>
@@ -153,3 +153,4 @@ export default function ProductsPage() {
         </div>
     );
 }
+

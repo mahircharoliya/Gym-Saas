@@ -60,7 +60,7 @@ export default function QRScanner({ onScan }: Props) {
                 {/* Scan overlay */}
                 {active && (
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div className="w-48 h-48 border-2 border-indigo-400 rounded-xl opacity-70" />
+                        <div className="w-48 h-48 border-2 border-blue-400 rounded-xl opacity-70" />
                     </div>
                 )}
             </div>
@@ -75,7 +75,7 @@ export default function QRScanner({ onScan }: Props) {
                     </button>
                 ) : (
                     <button onClick={startScanner}
-                        className="flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm text-white hover:bg-indigo-500 transition-colors">
+                        className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm text-black hover:bg-blue-500 transition-colors">
                         <Camera size={15} /> Start Scanner
                     </button>
                 )}
@@ -83,3 +83,4 @@ export default function QRScanner({ onScan }: Props) {
         </div>
     );
 }
+

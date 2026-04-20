@@ -67,39 +67,39 @@ export default function ProfilePage() {
     return (
         <div className="max-w-lg space-y-6">
             <div>
-                <h2 className="text-lg font-semibold text-white">Profile</h2>
-                <p className="text-sm text-gray-400 mt-0.5">Update your personal information.</p>
+                <h2 className="text-xl font-bold text-black">Profile</h2>
+                <p className="text-sm text-slate-400 mt-1">Update your personal information.</p>
             </div>
 
-            <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
-                {error && <p className="mb-4 text-sm text-red-400">{error}</p>}
-                {success && <p className="mb-4 text-sm text-emerald-400">{success}</p>}
+            {/* Avatar card */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 flex items-center gap-4 shadow-sm">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-violet-600 text-xl font-bold text-black shrink-0 shadow-lg shadow-blue-500/20">
+                    {user?.firstName?.[0]}{user?.lastName?.[0]}
+                </div>
+                <div>
+                    <p className="font-semibold text-black">{user?.firstName} {user?.lastName}</p>
+                    <p className="text-sm text-slate-400">{user?.email}</p>
+                    <span className="mt-1.5 inline-block rounded-full bg-blue-50 border border-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-600 capitalize">
+                        {user?.role?.toLowerCase()}
+                    </span>
+                </div>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                {error && <p className="mb-4 text-sm text-red-500">{error}</p>}
+                {success && <p className="mb-4 text-sm text-emerald-600">{success}</p>}
 
                 <form onSubmit={save} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                         <Input label="First Name" {...field("firstName")} />
                         <Input label="Last Name" {...field("lastName")} />
                     </div>
-                    <Input label="Email" value={user?.email ?? ""} disabled
-                        className="opacity-50 cursor-not-allowed" />
+                    <Input label="Email" value={user?.email ?? ""} disabled />
                     <Input label="Phone" type="tel" placeholder="+1 555 000 0000" {...field("phone")} />
                     <Button type="submit" loading={loading}>Save Changes</Button>
                 </form>
             </div>
-
-            {/* Avatar initials card */}
-            <div className="rounded-xl border border-gray-800 bg-gray-900 p-6 flex items-center gap-4">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-600 text-xl font-bold text-white shrink-0">
-                    {user?.firstName?.[0]}{user?.lastName?.[0]}
-                </div>
-                <div>
-                    <p className="font-medium text-white">{user?.firstName} {user?.lastName}</p>
-                    <p className="text-sm text-gray-400">{user?.email}</p>
-                    <span className="mt-1 inline-block rounded-full bg-indigo-500/10 px-2 py-0.5 text-xs text-indigo-400 capitalize">
-                        {user?.role?.toLowerCase()}
-                    </span>
-                </div>
-            </div>
         </div>
     );
 }
+

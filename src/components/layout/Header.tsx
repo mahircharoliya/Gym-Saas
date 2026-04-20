@@ -13,10 +13,16 @@ export default function Header() {
     );
 
     return (
-        <header className="flex h-14 items-center border-b border-gray-800 bg-gray-900 px-6">
-            <h1 className="text-sm font-semibold text-white">
-                {current?.label ?? "Dashboard"}
-            </h1>
+        <header className="flex h-14 items-center justify-between border-b border-slate-200 bg-white/80 px-6 backdrop-blur-sm">
+            <div className="flex items-center gap-2">
+                {current?.icon && (
+                    <current.icon size={16} className="text-slate-400" />
+                )}
+                <h1 className="text-sm font-semibold text-black">
+                    {current?.label ?? "Dashboard"}
+                </h1>
+            </div>
         </header>
     );
 }
+

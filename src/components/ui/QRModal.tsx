@@ -22,11 +22,11 @@ export default function QRModal({ url, title, onClose }: Props) {
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-            <div className="w-full max-w-sm rounded-2xl border border-gray-800 bg-gray-900 p-6 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/60 px-4">
+            <div className="w-full max-w-sm rounded-2xl border border-gray-800 bg-white p-6 shadow-2xl">
                 <div className="flex items-center justify-between mb-5">
-                    <p className="font-semibold text-white">QR Code</p>
-                    <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors">
+                    <p className="font-semibold text-black">QR Code</p>
+                    <button onClick={onClose} className="text-gray-500 hover:text-black transition-colors">
                         <X size={18} />
                     </button>
                 </div>
@@ -45,3 +45,4 @@ export default function QRModal({ url, title, onClose }: Props) {
         </div>
     );
 }
+

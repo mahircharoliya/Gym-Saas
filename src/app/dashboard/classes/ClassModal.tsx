@@ -75,11 +75,11 @@ export default function ClassModal({ token, defaultStart, onClose, onSaved }: Pr
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-            <div className="w-full max-w-lg rounded-2xl border border-gray-800 bg-gray-900 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/60 px-4">
+            <div className="w-full max-w-lg rounded-2xl border border-gray-800 bg-white shadow-2xl">
                 <div className="flex items-center justify-between border-b border-gray-800 px-6 py-4">
-                    <p className="font-semibold text-white">New Class</p>
-                    <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors"><X size={18} /></button>
+                    <p className="font-semibold text-black">New Class</p>
+                    <button onClick={onClose} className="text-gray-500 hover:text-black transition-colors"><X size={18} /></button>
                 </div>
 
                 <form onSubmit={save} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
@@ -105,7 +105,7 @@ export default function ClassModal({ token, defaultStart, onClose, onSaved }: Pr
                     <div className="flex flex-col gap-1">
                         <label className="text-sm font-medium text-gray-300">Trainer</label>
                         <select value={form.trainerId} onChange={(e) => set("trainerId", e.target.value)}
-                            className="rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                            className="rounded-lg border border-gray-700 bg-white px-3 py-2.5 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">No trainer assigned</option>
                             {trainers.map((t) => (
                                 <option key={t.id} value={t.id}>{t.firstName} {t.lastName}</option>
@@ -128,7 +128,7 @@ export default function ClassModal({ token, defaultStart, onClose, onSaved }: Pr
                     {/* Recurring */}
                     <label className="flex items-center gap-3 cursor-pointer">
                         <input type="checkbox" checked={form.isRecurring}
-                            onChange={(e) => set("isRecurring", e.target.checked)} className="accent-indigo-500" />
+                            onChange={(e) => set("isRecurring", e.target.checked)} className="accent-blue-500" />
                         <span className="text-sm text-gray-300">Recurring class</span>
                     </label>
 
@@ -140,7 +140,7 @@ export default function ClassModal({ token, defaultStart, onClose, onSaved }: Pr
                                     {DAYS_OF_WEEK.map((d, i) => (
                                         <button key={i} type="button" onClick={() => toggleDay(i)}
                                             className={`h-8 w-8 rounded-full text-xs font-medium transition-colors ${form.recurringDays.includes(i)
-                                                    ? "bg-indigo-600 text-white"
+                                                    ? "bg-blue-600 text-black"
                                                     : "bg-gray-800 text-gray-400 hover:bg-gray-700"
                                                 }`}>
                                             {d[0]}
@@ -162,3 +162,4 @@ export default function ClassModal({ token, defaultStart, onClose, onSaved }: Pr
         </div>
     );
 }
+

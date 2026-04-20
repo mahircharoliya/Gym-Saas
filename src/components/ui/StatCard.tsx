@@ -4,30 +4,32 @@ interface Props {
     label: string;
     value: string | number;
     sub?: string;
-    trend?: number; // positive = up, negative = down
+    trend?: number;
     icon: React.ElementType;
     iconColor: string;
     iconBg: string;
 }
 
 export default function StatCard({ label, value, sub, trend, icon: Icon, iconColor, iconBg }: Props) {
-    const trendColor = trend === undefined ? "" : trend > 0 ? "text-emerald-400" : trend < 0 ? "text-red-400" : "text-gray-400";
-    const TrendIcon = trend === undefined ? null : trend > 0 ? TrendingUp : trend < 0 ? TrendingDown : Minus;
+    const trendUp = trend !== undefined && trend > 0;
+    const trendDown = trend !== undefined && trend < 0;
+    const trendColor = trendUp ? "text-emerald-600" : trendDown ? "text-red-500" : "text-slate-400";
+    const TrendIcon = trend === undefined ? null : trendUp ? TrendingUp : trendDown ? TrendingDown : Minus;
 
     return (
-        <div className="rounded-xl border border-gray-800 bg-gray-900 p-5">
-            <div className="flex items-center justify-between mb-3">
-                <p className="text-sm text-gray-400">{label}</p>
-                <div className={`rounded-lg p-2 ${iconBg}`}>
-                    <Icon size={18} className={iconColor} />
+        <div className="card-premium p-5 flex flex-col justify-between h-full">
+            <div className="flex items-start justify-between mb-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">{label}</p>
+                <div className={`rounded-xl p-2.5 ${iconBg}`}>
+                    <Icon size={16} className={iconColor} />
                 </div>
             </div>
-            <p className="text-2xl font-bold text-white">{value}</p>
-            <div className="flex items-center gap-1.5 mt-1">
-                {sub && <p className="text-xs text-gray-500">{sub}</p>}
+            <p className="text-3xl font-bold tracking-tight text-black">{value}</p>
+            <div className="flex items-center gap-2 mt-2">
+                {sub && <p className="text-xs text-slate-400">{sub}</p>}
                 {TrendIcon && trend !== undefined && (
-                    <span className={`flex items-center gap-0.5 text-xs font-medium ${trendColor}`}>
-                        <TrendIcon size={12} />
+                    <span className={`flex items-center gap-0.5 text-xs font-semibold ${trendColor}`}>
+                        <TrendIcon size={11} />
                         {Math.abs(trend)}%
                     </span>
                 )}
@@ -35,3 +37,4 @@ export default function StatCard({ label, value, sub, trend, icon: Icon, iconCol
         </div>
     );
 }
+

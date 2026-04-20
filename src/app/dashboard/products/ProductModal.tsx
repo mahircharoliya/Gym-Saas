@@ -97,13 +97,13 @@ export default function ProductModal({ product, token, onClose, onSaved }: Props
     const showDuration = form.membershipType === "TIME_BASED";
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-            <div className="w-full max-w-lg rounded-2xl border border-gray-800 bg-gray-900 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/60 px-4">
+            <div className="w-full max-w-lg rounded-2xl border border-gray-800 bg-white shadow-2xl">
                 <div className="flex items-center justify-between border-b border-gray-800 px-6 py-4">
-                    <p className="font-semibold text-white">
+                    <p className="font-semibold text-black">
                         {product ? "Edit Product" : "New Product"}
                     </p>
-                    <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors">
+                    <button onClick={onClose} className="text-gray-500 hover:text-black transition-colors">
                         <X size={18} />
                     </button>
                 </div>
@@ -125,7 +125,7 @@ export default function ProductModal({ product, token, onClose, onSaved }: Props
                             placeholder="Optional description..."
                             value={form.description}
                             onChange={(e) => set("description", e.target.value)}
-                            className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                            className="w-full rounded-lg border border-gray-700 bg-white px-4 py-2.5 text-sm text-black placeholder-gray-500 outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                         />
                     </div>
 
@@ -133,14 +133,14 @@ export default function ProductModal({ product, token, onClose, onSaved }: Props
                         <div className="flex flex-col gap-1">
                             <label className="text-sm font-medium text-gray-300">Membership Type</label>
                             <select value={form.membershipType} onChange={(e) => set("membershipType", e.target.value)}
-                                className="rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                className="rounded-lg border border-gray-700 bg-white px-3 py-2.5 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500">
                                 {MEMBERSHIP_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
                             </select>
                         </div>
                         <div className="flex flex-col gap-1">
                             <label className="text-sm font-medium text-gray-300">Billing</label>
                             <select value={form.billingInterval} onChange={(e) => set("billingInterval", e.target.value)}
-                                className="rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                                className="rounded-lg border border-gray-700 bg-white px-3 py-2.5 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500">
                                 {BILLING_INTERVALS.map((b) => <option key={b.value} value={b.value}>{b.label}</option>)}
                             </select>
                         </div>
@@ -182,3 +182,4 @@ export default function ProductModal({ product, token, onClose, onSaved }: Props
         </div>
     );
 }
+

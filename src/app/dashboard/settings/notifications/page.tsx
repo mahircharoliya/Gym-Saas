@@ -31,14 +31,14 @@ export default function NotificationsPage() {
 
     if (loading) return (
         <div className="flex justify-center py-12">
-            <span className="h-5 w-5 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
+            <span className="h-5 w-5 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
         </div>
     );
 
     return (
         <div className="max-w-md space-y-6">
-            <div className="rounded-xl border border-gray-800 bg-gray-900 p-6 space-y-5">
-                <p className="text-sm font-medium text-white">Class Reminders</p>
+            <div className="rounded-xl border border-gray-800 bg-white p-6 space-y-5">
+                <p className="text-sm font-medium text-black">Class Reminders</p>
                 {success && <p className="text-sm text-emerald-400">{success}</p>}
 
                 <Toggle
@@ -66,13 +66,14 @@ function Toggle({ label, description, checked, onChange }: {
     return (
         <label className="flex items-start justify-between gap-4 cursor-pointer">
             <div>
-                <p className="text-sm text-white">{label}</p>
+                <p className="text-sm text-black">{label}</p>
                 <p className="text-xs text-gray-500 mt-0.5">{description}</p>
             </div>
             <button type="button" onClick={() => onChange(!checked)}
-                className={`relative shrink-0 h-6 w-11 rounded-full transition-colors ${checked ? "bg-indigo-600" : "bg-gray-700"}`}>
+                className={`relative shrink-0 h-6 w-11 rounded-full transition-colors ${checked ? "bg-blue-600" : "bg-gray-700"}`}>
                 <span className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${checked ? "translate-x-5" : "translate-x-0"}`} />
             </button>
         </label>
     );
 }
+

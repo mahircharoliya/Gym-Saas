@@ -43,17 +43,17 @@ export default function MembershipAnalyticsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-white">Membership Analytics</h2>
+          <h2 className="text-lg font-semibold text-black">Membership Analytics</h2>
           <p className="text-sm text-gray-400 mt-0.5">Member growth, churn, and plan breakdown.</p>
         </div>
         <div className="flex items-center gap-2">
           {RANGES.map((r) => (
             <button key={r.value} onClick={() => setRange(r.value)}
-              className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${range === r.value ? "bg-indigo-600 text-white" : "border border-gray-700 text-gray-400 hover:text-white"}`}>
+              className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${range === r.value ? "bg-blue-600 text-black" : "border border-gray-700 text-gray-400 hover:text-black"}`}>
               {r.label}
             </button>
           ))}
-          <button onClick={fetch_} className="rounded-lg border border-gray-700 p-2 text-gray-400 hover:text-white transition-colors">
+          <button onClick={fetch_} className="rounded-lg border border-gray-700 p-2 text-gray-400 hover:text-black transition-colors">
             <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
           </button>
         </div>
@@ -64,7 +64,7 @@ export default function MembershipAnalyticsPage() {
         <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-3">Lifetime Metrics</p>
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           <StatCard label="Total Active Members" value={String(lifetime?.totalActive ?? "—")}
-            icon={Users} iconColor="text-indigo-400" iconBg="bg-indigo-500/10" />
+            icon={Users} iconColor="text-blue-400" iconBg="bg-blue-500/10" />
           <StatCard label="Avg Membership Duration" value={lifetime ? `${lifetime.avgDuration}d` : "—"}
             sub="average days subscribed"
             icon={Clock} iconColor="text-sky-400" iconBg="bg-sky-500/10" />
@@ -86,9 +86,9 @@ export default function MembershipAnalyticsPage() {
             { label: "Growth Rate",      value: rangeData ? `${rangeData.growthRate}%` : "—" },
             { label: "Inactive Members", value: String(rangeData?.inactiveMembers ?? "—") },
           ].map((s) => (
-            <div key={s.label} className="rounded-xl border border-gray-800 bg-gray-900 p-5">
+            <div key={s.label} className="rounded-xl border border-gray-800 bg-white p-5">
               <p className="text-sm text-gray-400">{s.label}</p>
-              <p className="text-2xl font-bold text-white mt-2">{s.value}</p>
+              <p className="text-2xl font-bold text-black mt-2">{s.value}</p>
             </div>
           ))}
         </div>
@@ -96,8 +96,8 @@ export default function MembershipAnalyticsPage() {
 
       {/* Charts */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
-          <p className="text-sm font-medium text-white mb-4">New Memberships Over Time</p>
+        <div className="rounded-xl border border-gray-800 bg-white p-6">
+          <p className="text-sm font-medium text-black mb-4">New Memberships Over Time</p>
           <ResponsiveContainer width="100%" height={200}>
             <AreaChart data={daily.map((d) => ({ ...d, date: fmtDate(d.date) }))} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
               <defs>
@@ -115,8 +115,8 @@ export default function MembershipAnalyticsPage() {
           </ResponsiveContainer>
         </div>
 
-        <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
-          <p className="text-sm font-medium text-white mb-4">Active Plan Breakdown</p>
+        <div className="rounded-xl border border-gray-800 bg-white p-6">
+          <p className="text-sm font-medium text-black mb-4">Active Plan Breakdown</p>
           {plans.length === 0 ? (
             <div className="flex items-center justify-center h-48 text-gray-500 text-sm">No data</div>
           ) : (
@@ -135,3 +135,4 @@ export default function MembershipAnalyticsPage() {
     </div>
   );
 }
+

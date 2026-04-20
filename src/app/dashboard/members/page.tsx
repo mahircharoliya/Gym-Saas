@@ -108,8 +108,8 @@ export default function MembersPage() {
             {/* Header */}
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <h2 className="text-lg font-semibold text-white">Members</h2>
-                    <p className="text-sm text-gray-400 mt-0.5">{total} total members</p>
+                    <h2 className="text-lg font-semibold text-black">Members</h2>
+                    <p className="text-sm text-slate-500 mt-0.5">{total} total members</p>
                 </div>
                 <div className="flex gap-2">
                     <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleImport} />
@@ -128,26 +128,26 @@ export default function MembersPage() {
             </div>
 
             {importMsg && (
-                <p className="text-sm text-emerald-400">{importMsg}</p>
+                <p className="text-sm text-emerald-600">{importMsg}</p>
             )}
 
             {/* Filters */}
             <div className="flex flex-wrap gap-3">
                 <div className="relative flex-1 min-w-48">
-                    <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+                    <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                     <input
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Search name or email…"
-                        className="w-full rounded-lg border border-gray-700 bg-gray-900 pl-9 pr-4 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-indigo-500"
+                        className="w-full rounded-xl border border-slate-200 bg-white pl-9 pr-4 py-2.5 text-sm text-black placeholder-slate-400 outline-none transition hover:border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                     />
                 </div>
                 <select value={roleFilter} onChange={(e) => setRoleFilter(e.target.value)}
-                    className="rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                    className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-black outline-none transition hover:border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20">
                     {ROLES.map((r) => <option key={r} value={r}>{r || "All Roles"}</option>)}
                 </select>
                 <select value={sortBy} onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-                    className="rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                    className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-black outline-none transition hover:border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20">
                     <option value="newest">Newest First</option>
                     <option value="oldest">Oldest First</option>
                     <option value="name">Name A–Z</option>
@@ -156,24 +156,24 @@ export default function MembersPage() {
 
             {/* Bulk actions */}
             {selected.length > 0 && (
-                <div className="flex items-center gap-3 rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5">
-                    <span className="text-sm text-gray-300">{selected.length} selected</span>
+                <div className="flex items-center gap-3 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2.5">
+                    <span className="text-sm text-blue-700 font-medium">{selected.length} selected</span>
                     <button onClick={bulkDelete}
-                        className="flex items-center gap-1.5 text-sm text-red-400 hover:text-red-300 transition-colors ml-auto">
+                        className="flex items-center gap-1.5 text-sm text-red-500 hover:text-red-600 transition-colors ml-auto">
                         <Trash2 size={14} /> Delete
                     </button>
                 </div>
             )}
 
             {/* Table */}
-            <div className="rounded-xl border border-gray-800 bg-gray-900 overflow-hidden">
+            <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
                 <table className="w-full text-sm">
                     <thead>
-                        <tr className="border-b border-gray-800 text-xs text-gray-500 uppercase tracking-wider">
+                        <tr className="border-b border-slate-200 text-xs text-slate-500 uppercase tracking-wider bg-slate-50">
                             <th className="px-4 py-3 text-left w-10">
                                 <input type="checkbox"
                                     checked={selected.length === members.length && members.length > 0}
-                                    onChange={toggleAll} className="accent-indigo-500" />
+                                    onChange={toggleAll} className="accent-blue-500" />
                             </th>
                             <th className="px-4 py-3 text-left">Member</th>
                             <th className="px-4 py-3 text-left hidden md:table-cell">Role</th>
@@ -184,47 +184,47 @@ export default function MembersPage() {
                     </thead>
                     <tbody>
                         {loading ? (
-                            <tr><td colSpan={6} className="py-12 text-center">
-                                <span className="h-5 w-5 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent inline-block" />
+                            <tr><td colSpan={6} className="py-16 text-center">
+                                <span className="h-5 w-5 animate-spin rounded-full border-2 border-blue-500 border-t-transparent inline-block" />
                             </td></tr>
                         ) : members.length === 0 ? (
-                            <tr><td colSpan={6} className="py-12 text-center text-gray-500 text-sm">
+                            <tr><td colSpan={6} className="py-16 text-center text-slate-400 text-sm">
                                 No members found.
                             </td></tr>
                         ) : members.map((m) => (
                             <tr key={m.id}
-                                className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors cursor-pointer"
+                                className="border-b border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer"
                                 onClick={() => router.push(`/dashboard/members/${m.id}`)}>
-                                <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                                <td className="px-4 py-3.5" onClick={(e) => e.stopPropagation()}>
                                     <input type="checkbox" checked={selected.includes(m.id)}
-                                        onChange={() => toggleSelect(m.id)} className="accent-indigo-500" />
+                                        onChange={() => toggleSelect(m.id)} className="accent-blue-500" />
                                 </td>
-                                <td className="px-4 py-3">
+                                <td className="px-4 py-3.5">
                                     <div className="flex items-center gap-3">
-                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600/20 text-xs font-bold text-indigo-400 shrink-0">
+                                        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-xs font-bold text-blue-600 shrink-0 border border-blue-100">
                                             {m.firstName[0]}{m.lastName[0]}
                                         </div>
                                         <div>
-                                            <p className="font-medium text-white">{m.firstName} {m.lastName}</p>
-                                            <p className="text-xs text-gray-500">{m.email}</p>
+                                            <p className="font-medium text-black">{m.firstName} {m.lastName}</p>
+                                            <p className="text-xs text-slate-400">{m.email}</p>
                                         </div>
                                     </div>
                                 </td>
-                                <td className="px-4 py-3 hidden md:table-cell">
-                                    <span className="rounded-full bg-gray-800 px-2 py-0.5 text-xs text-gray-300 capitalize">
+                                <td className="px-4 py-3.5 hidden md:table-cell">
+                                    <span className="rounded-full bg-slate-100 border border-slate-200 px-2.5 py-0.5 text-xs text-slate-600 capitalize">
                                         {m.role.toLowerCase()}
                                     </span>
                                 </td>
-                                <td className="px-4 py-3 hidden lg:table-cell text-gray-400 text-xs">
-                                    {m.memberProducts[0]?.product.name ?? <span className="text-gray-600">—</span>}
+                                <td className="px-4 py-3.5 hidden lg:table-cell text-slate-500 text-xs">
+                                    {m.memberProducts[0]?.product.name ?? <span className="text-slate-300">—</span>}
                                 </td>
-                                <td className="px-4 py-3 hidden lg:table-cell text-gray-500 text-xs">
+                                <td className="px-4 py-3.5 hidden lg:table-cell text-slate-400 text-xs">
                                     {new Date(m.createdAt).toLocaleDateString()}
                                 </td>
-                                <td className="px-4 py-3 text-right" onClick={(e) => e.stopPropagation()}>
+                                <td className="px-4 py-3.5 text-right" onClick={(e) => e.stopPropagation()}>
                                     <button
                                         onClick={() => router.push(`/dashboard/members/${m.id}`)}
-                                        className="text-gray-400 hover:text-white transition-colors p-1">
+                                        className="text-slate-400 hover:text-black transition-colors p-1 rounded-lg hover:bg-slate-100">
                                         <UserCog size={15} />
                                     </button>
                                 </td>
@@ -236,15 +236,15 @@ export default function MembersPage() {
 
             {/* Pagination */}
             {pages > 1 && (
-                <div className="flex items-center justify-between text-sm text-gray-400">
+                <div className="flex items-center justify-between text-sm text-slate-500">
                     <span>Page {page} of {pages}</span>
                     <div className="flex gap-2">
                         <button disabled={page === 1} onClick={() => setPage((p) => p - 1)}
-                            className="rounded-lg border border-gray-700 p-2 hover:bg-gray-800 disabled:opacity-40 transition-colors">
+                            className="rounded-xl border border-slate-200 p-2 hover:bg-slate-50 disabled:opacity-30 transition-colors">
                             <ChevronLeft size={15} />
                         </button>
                         <button disabled={page === pages} onClick={() => setPage((p) => p + 1)}
-                            className="rounded-lg border border-gray-700 p-2 hover:bg-gray-800 disabled:opacity-40 transition-colors">
+                            className="rounded-xl border border-slate-200 p-2 hover:bg-slate-50 disabled:opacity-30 transition-colors">
                             <ChevronRight size={15} />
                         </button>
                     </div>
@@ -288,10 +288,10 @@ function AddMemberModal({ token, onClose, onSaved }: AddMemberModalProps) {
     }
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-            <div className="w-full max-w-md rounded-2xl border border-gray-800 bg-gray-900 p-6 shadow-2xl space-y-4">
-                <p className="font-semibold text-white">Add Member</p>
-                {error && <p className="text-sm text-red-400">{error}</p>}
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-sm px-4">
+            <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl space-y-4">
+                <p className="font-semibold text-black">Add Member</p>
+                {error && <p className="text-sm text-red-500">{error}</p>}
                 <form onSubmit={save} className="space-y-3">
                     <div className="grid grid-cols-2 gap-3">
                         <Input label="First Name" value={form.firstName} onChange={(e) => setForm(f => ({ ...f, firstName: e.target.value }))} />
@@ -300,10 +300,10 @@ function AddMemberModal({ token, onClose, onSaved }: AddMemberModalProps) {
                     <Input label="Email" type="email" value={form.email} onChange={(e) => setForm(f => ({ ...f, email: e.target.value }))} />
                     <Input label="Phone" value={form.phone} onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))} />
                     <Input label="Temp Password" type="password" value={form.password} onChange={(e) => setForm(f => ({ ...f, password: e.target.value }))} />
-                    <div className="flex flex-col gap-1">
-                        <label className="text-sm font-medium text-gray-300">Role</label>
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Role</label>
                         <select value={form.role} onChange={(e) => setForm(f => ({ ...f, role: e.target.value }))}
-                            className="rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                            className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-black outline-none transition hover:border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20">
                             {["MEMBER", "TRAINER", "MANAGER", "ADMIN"].map(r => <option key={r} value={r}>{r}</option>)}
                         </select>
                     </div>
@@ -316,3 +316,4 @@ function AddMemberModal({ token, onClose, onSaved }: AddMemberModalProps) {
         </div>
     );
 }
+

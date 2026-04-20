@@ -83,38 +83,38 @@ export default function ClassesPage() {
             {/* Header */}
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
-                    <button onClick={prevWeek} className="rounded-lg border border-gray-700 p-2 hover:bg-gray-800 transition-colors">
+                    <button onClick={prevWeek} className="rounded-lg border border-slate-200 p-2 hover:bg-slate-50 transition-colors">
                         <ChevronLeft size={15} />
                     </button>
-                    <button onClick={goToday} className="rounded-lg border border-gray-700 px-3 py-2 text-sm text-gray-300 hover:bg-gray-800 transition-colors">
+                    <button onClick={goToday} className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors">
                         Today
                     </button>
-                    <button onClick={nextWeek} className="rounded-lg border border-gray-700 p-2 hover:bg-gray-800 transition-colors">
+                    <button onClick={nextWeek} className="rounded-lg border border-slate-200 p-2 hover:bg-slate-50 transition-colors">
                         <ChevronRight size={15} />
                     </button>
-                    <span className="text-sm font-medium text-white ml-2">
+                    <span className="text-sm font-medium text-black ml-2">
                         {weekStart.toLocaleDateString("en-US", { month: "long", year: "numeric" })}
                     </span>
                 </div>
                 {canManage && (
                     <button onClick={() => { setDefaultStart(null); setCreateModal(true); }}
-                        className="flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 transition-colors">
+                        className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-black hover:bg-blue-500 transition-colors">
                         <Plus size={15} /> New Class
                     </button>
                 )}
             </div>
 
             {/* Calendar grid */}
-            <div className="rounded-xl border border-gray-800 bg-gray-900 overflow-hidden">
+            <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
                 {/* Day headers */}
-                <div className="grid grid-cols-8 border-b border-gray-800">
-                    <div className="py-3 px-2 text-xs text-gray-600" />
+                <div className="grid grid-cols-8 border-b border-slate-200">
+                    <div className="py-3 px-2 text-xs text-slate-400" />
                     {weekDays.map((d, i) => {
                         const isToday = d.toDateString() === today.toDateString();
                         return (
                             <div key={i} className="py-3 text-center">
-                                <p className="text-xs text-gray-500">{DAYS[d.getDay()]}</p>
-                                <p className={`text-sm font-semibold mt-0.5 w-7 h-7 flex items-center justify-center rounded-full mx-auto ${isToday ? "bg-indigo-600 text-white" : "text-gray-300"
+                                <p className="text-xs text-slate-400">{DAYS[d.getDay()]}</p>
+                                <p className={`text-sm font-semibold mt-0.5 w-7 h-7 flex items-center justify-center rounded-full mx-auto ${isToday ? "bg-blue-600 text-black" : "text-slate-700"
                                     }`}>
                                     {d.getDate()}
                                 </p>
@@ -126,8 +126,8 @@ export default function ClassesPage() {
                 {/* Time slots */}
                 <div className="overflow-y-auto max-h-[600px]">
                     {HOURS.map((hour) => (
-                        <div key={hour} className="grid grid-cols-8 border-b border-gray-800/50 min-h-[56px]">
-                            <div className="px-2 py-1 text-xs text-gray-600 text-right pt-1.5">
+                        <div key={hour} className="grid grid-cols-8 border-b border-slate-200/50 min-h-[56px]">
+                            <div className="px-2 py-1 text-xs text-slate-400 text-right pt-1.5">
                                 {hour === 12 ? "12pm" : hour < 12 ? `${hour}am` : `${hour - 12}pm`}
                             </div>
                             {weekDays.map((day, di) => {
@@ -137,12 +137,12 @@ export default function ClassesPage() {
                                 });
                                 return (
                                     <div key={di}
-                                        className="border-l border-gray-800/50 p-0.5 cursor-pointer hover:bg-gray-800/20 transition-colors relative"
+                                        className="border-l border-slate-200/50 p-0.5 cursor-pointer hover:bg-slate-50/50 transition-colors relative"
                                         onClick={() => canManage && openCreateAt(day, hour)}>
                                         {dayClasses.map((c) => (
                                             <button key={c.id}
                                                 onClick={(e) => { e.stopPropagation(); setDetailClass(c); }}
-                                                className="w-full text-left rounded px-1.5 py-1 text-xs font-medium text-white mb-0.5 truncate"
+                                                className="w-full text-left rounded px-1.5 py-1 text-xs font-medium text-black mb-0.5 truncate"
                                                 style={{ backgroundColor: c.color + "cc" }}>
                                                 {c.name}
                                                 <span className="block text-[10px] opacity-75">
@@ -161,7 +161,7 @@ export default function ClassesPage() {
 
             {loading && (
                 <div className="flex justify-center py-4">
-                    <span className="h-5 w-5 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
+                    <span className="h-5 w-5 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
                 </div>
             )}
 
@@ -183,3 +183,4 @@ export default function ClassesPage() {
         </div>
     );
 }
+

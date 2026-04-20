@@ -46,17 +46,17 @@ export default function FinancialAnalyticsPage() {
         <div className="space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <h2 className="text-lg font-semibold text-white">Financial Analytics</h2>
+                    <h2 className="text-lg font-semibold text-black">Financial Analytics</h2>
                     <p className="text-sm text-gray-400 mt-0.5">Revenue, MRR, ARR, and payment metrics.</p>
                 </div>
                 <div className="flex items-center gap-2">
                     {RANGES.map((r) => (
                         <button key={r.value} onClick={() => setRange(r.value)}
-                            className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${range === r.value ? "bg-indigo-600 text-white" : "border border-gray-700 text-gray-400 hover:text-white"}`}>
+                            className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${range === r.value ? "bg-blue-600 text-black" : "border border-gray-700 text-gray-400 hover:text-black"}`}>
                             {r.label}
                         </button>
                     ))}
-                    <button onClick={fetch_} className="rounded-lg border border-gray-700 p-2 text-gray-400 hover:text-white transition-colors">
+                    <button onClick={fetch_} className="rounded-lg border border-gray-700 p-2 text-gray-400 hover:text-black transition-colors">
                         <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
                     </button>
                 </div>
@@ -90,9 +90,9 @@ export default function FinancialAnalyticsPage() {
                         { label: "Failed Payments", value: String(rangeData?.failedPayments ?? "—") },
                         { label: "Outstanding", value: fmtMoney(rangeData?.outstandingPayments) },
                     ].map((s) => (
-                        <div key={s.label} className="rounded-xl border border-gray-800 bg-gray-900 p-5">
+                        <div key={s.label} className="rounded-xl border border-gray-800 bg-white p-5">
                             <p className="text-sm text-gray-400">{s.label}</p>
-                            <p className="text-2xl font-bold text-white mt-2">{s.value}</p>
+                            <p className="text-2xl font-bold text-black mt-2">{s.value}</p>
                         </div>
                     ))}
                 </div>
@@ -100,8 +100,8 @@ export default function FinancialAnalyticsPage() {
 
             {/* Charts */}
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
-                    <p className="text-sm font-medium text-white mb-4">Revenue Over Time</p>
+                <div className="rounded-xl border border-gray-800 bg-white p-6">
+                    <p className="text-sm font-medium text-black mb-4">Revenue Over Time</p>
                     <ResponsiveContainer width="100%" height={200}>
                         <AreaChart data={daily.map((d) => ({ ...d, date: fmtDate(d.date) }))} margin={{ top: 4, right: 4, left: -10, bottom: 0 }}>
                             <defs>
@@ -119,8 +119,8 @@ export default function FinancialAnalyticsPage() {
                     </ResponsiveContainer>
                 </div>
 
-                <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
-                    <p className="text-sm font-medium text-white mb-4">Revenue by Plan</p>
+                <div className="rounded-xl border border-gray-800 bg-white p-6">
+                    <p className="text-sm font-medium text-black mb-4">Revenue by Plan</p>
                     {revenueByType.length === 0 ? (
                         <div className="flex items-center justify-center h-48 text-gray-500 text-sm">No data</div>
                     ) : (
@@ -138,8 +138,8 @@ export default function FinancialAnalyticsPage() {
             </div>
 
             {/* Summary table */}
-            <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
-                <p className="text-sm font-medium text-white mb-4">Revenue by Membership Type</p>
+            <div className="rounded-xl border border-gray-800 bg-white p-6">
+                <p className="text-sm font-medium text-black mb-4">Revenue by Membership Type</p>
                 {revenueByType.length === 0 ? (
                     <p className="text-sm text-gray-500">No data yet.</p>
                 ) : (
@@ -154,7 +154,7 @@ export default function FinancialAnalyticsPage() {
                             {revenueByType.map((r) => (
                                 <tr key={r.name} className="border-b border-gray-800/50">
                                     <td className="py-3 text-gray-300">{r.name}</td>
-                                    <td className="py-3 text-right font-medium text-white">${Number(r.revenue).toLocaleString()}</td>
+                                    <td className="py-3 text-right font-medium text-black">${Number(r.revenue).toLocaleString()}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -164,3 +164,4 @@ export default function FinancialAnalyticsPage() {
         </div>
     );
 }
+

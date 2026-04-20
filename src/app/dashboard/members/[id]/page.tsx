@@ -132,7 +132,7 @@ export default function MemberDetailPage({ params }: { params: Promise<{ id: str
 
     if (loading) return (
         <div className="flex justify-center py-20">
-            <span className="h-6 w-6 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
+            <span className="h-6 w-6 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
         </div>
     );
 
@@ -145,7 +145,7 @@ export default function MemberDetailPage({ params }: { params: Promise<{ id: str
             {/* Back + header */}
             <div className="flex items-center justify-between">
                 <button onClick={() => router.push("/dashboard/members")}
-                    className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors">
+                    className="flex items-center gap-2 text-sm text-gray-400 hover:text-black transition-colors">
                     <ArrowLeft size={16} /> Members
                 </button>
                 <button onClick={deleteMember}
@@ -155,12 +155,12 @@ export default function MemberDetailPage({ params }: { params: Promise<{ id: str
             </div>
 
             {/* Avatar + info */}
-            <div className="flex items-center gap-4 rounded-xl border border-gray-800 bg-gray-900 p-6">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-indigo-600 text-lg font-bold text-white shrink-0">
+            <div className="flex items-center gap-4 rounded-xl border border-gray-800 bg-white p-6">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-600 text-lg font-bold text-black shrink-0">
                     {member.firstName[0]}{member.lastName[0]}
                 </div>
                 <div>
-                    <p className="text-lg font-semibold text-white">{member.firstName} {member.lastName}</p>
+                    <p className="text-lg font-semibold text-black">{member.firstName} {member.lastName}</p>
                     <p className="text-sm text-gray-400">{member.email}</p>
                     <p className="text-xs text-gray-500 mt-0.5">
                         Joined {new Date(member.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
@@ -169,8 +169,8 @@ export default function MemberDetailPage({ params }: { params: Promise<{ id: str
             </div>
 
             {/* Edit form */}
-            <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
-                <p className="text-sm font-medium text-white mb-4">Edit Info</p>
+            <div className="rounded-xl border border-gray-800 bg-white p-6">
+                <p className="text-sm font-medium text-black mb-4">Edit Info</p>
                 {error && <p className="mb-3 text-sm text-red-400">{error}</p>}
                 {success && <p className="mb-3 text-sm text-emerald-400">{success}</p>}
                 <form onSubmit={save} className="space-y-4">
@@ -185,7 +185,7 @@ export default function MemberDetailPage({ params }: { params: Promise<{ id: str
                     <div className="flex flex-col gap-1">
                         <label className="text-sm font-medium text-gray-300">Role</label>
                         <select value={form.role} onChange={(e) => setForm((f) => ({ ...f, role: e.target.value }))}
-                            className="rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                            className="rounded-lg border border-gray-700 bg-white px-3 py-2.5 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500">
                             {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
                         </select>
                     </div>
@@ -194,15 +194,15 @@ export default function MemberDetailPage({ params }: { params: Promise<{ id: str
             </div>
 
             {/* Memberships */}
-            <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
+            <div className="rounded-xl border border-gray-800 bg-white p-6">
                 <div className="flex items-center justify-between mb-4">
-                    <p className="text-sm font-medium text-white">Memberships</p>
+                    <p className="text-sm font-medium text-black">Memberships</p>
                 </div>
 
                 {/* Assign product */}
                 <div className="flex gap-2 mb-4">
                     <select value={selectedProductId} onChange={(e) => setSelectedProductId(e.target.value)}
-                        className="flex-1 rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                        className="flex-1 rounded-lg border border-gray-700 bg-white px-3 py-2 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="">Select product to assign…</option>
                         {products.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
                     </select>
@@ -222,7 +222,7 @@ export default function MemberDetailPage({ params }: { params: Promise<{ id: str
                                 <div key={mp.id} className="flex items-center justify-between rounded-lg border border-gray-800 px-4 py-3">
                                     <div>
                                         <div className="flex items-center gap-2">
-                                            <p className="text-sm font-medium text-white">{mp.product.name}</p>
+                                            <p className="text-sm font-medium text-black">{mp.product.name}</p>
                                             <span className={`flex items-center gap-1 text-xs ${color}`}>
                                                 <Icon size={11} /> {mp.status}
                                             </span>
@@ -254,8 +254,8 @@ export default function MemberDetailPage({ params }: { params: Promise<{ id: str
             </div>
 
             {/* Signed waivers */}
-            <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
-                <p className="text-sm font-medium text-white mb-4">Signed Waivers</p>
+            <div className="rounded-xl border border-gray-800 bg-white p-6">
+                <p className="text-sm font-medium text-black mb-4">Signed Waivers</p>
                 {member.signedWaivers.length === 0 ? (
                     <p className="text-sm text-gray-500">No signed waivers.</p>
                 ) : (

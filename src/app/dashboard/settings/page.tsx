@@ -81,32 +81,32 @@ export default function GeneralSettingsPage() {
 
     if (loading) return (
         <div className="flex justify-center py-12">
-            <span className="h-5 w-5 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
+            <span className="h-5 w-5 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
         </div>
     );
 
     return (
         <form onSubmit={save} className="max-w-2xl space-y-6">
-            {error && <p className="text-sm text-red-400">{error}</p>}
-            {success && <p className="text-sm text-emerald-400">{success}</p>}
+            {error && <p className="text-sm text-red-500">{error}</p>}
+            {success && <p className="text-sm text-emerald-600">{success}</p>}
 
             {/* Gym info */}
-            <div className="rounded-xl border border-gray-800 bg-gray-900 p-6 space-y-4">
-                <p className="text-sm font-medium text-white">Gym Information</p>
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-4 shadow-sm">
+                <p className="text-sm font-semibold text-black">Gym Information</p>
                 <Input label="Gym Name" value={form.name} onChange={(e) => set("name", e.target.value)} />
                 <div className="grid grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-1">
-                        <label className="text-sm font-medium text-gray-300">Slug</label>
-                        <div className="flex items-center rounded-lg border border-gray-700 bg-gray-800 px-3 py-2.5 text-sm">
-                            <span className="text-gray-500 shrink-0">thinkauric.com/</span>
-                            <span className="text-white">{form.slug}</span>
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Slug</label>
+                        <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm">
+                            <span className="text-slate-400 shrink-0">thinkauric.com/</span>
+                            <span className="text-black">{form.slug}</span>
                         </div>
                     </div>
                     <Input label="Custom Domain" placeholder="gym.yourdomain.com"
                         value={form.domain} onChange={(e) => set("domain", e.target.value)} />
                 </div>
-                <Input label="Logo URL" placeholder="https://..." value={form.logoUrl}
-                    onChange={(e) => set("logoUrl", e.target.value)} />
+                <Input label="Logo URL" placeholder="https://..."
+                    value={form.logoUrl} onChange={(e) => set("logoUrl", e.target.value)} />
                 <Input label="Address" placeholder="123 Main St, City, State"
                     value={form.address} onChange={(e) => set("address", e.target.value)} />
                 <div className="grid grid-cols-2 gap-4">
@@ -115,18 +115,18 @@ export default function GeneralSettingsPage() {
                     <Input label="Contact Email" type="email" placeholder="info@yourgym.com"
                         value={form.email} onChange={(e) => set("email", e.target.value)} />
                 </div>
-                <div className="flex flex-col gap-1">
-                    <label className="text-sm font-medium text-gray-300">Timezone</label>
+                <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">Timezone</label>
                     <select value={form.timezone} onChange={(e) => set("timezone", e.target.value)}
-                        className="rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500">
+                        className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-black outline-none transition hover:border-slate-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20">
                         {TIMEZONES.map((tz) => <option key={tz} value={tz}>{tz}</option>)}
                     </select>
                 </div>
             </div>
 
             {/* Notifications */}
-            <div className="rounded-xl border border-gray-800 bg-gray-900 p-6 space-y-4">
-                <p className="text-sm font-medium text-white">Notifications</p>
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-5 shadow-sm">
+                <p className="text-sm font-semibold text-black">Notifications</p>
                 <Toggle
                     label="Email Notifications"
                     description="Send booking confirmations and reminders via email"
@@ -156,13 +156,13 @@ function Toggle({
     return (
         <label className="flex items-start justify-between gap-4 cursor-pointer">
             <div>
-                <p className="text-sm text-white">{label}</p>
-                <p className="text-xs text-gray-500 mt-0.5">{description}</p>
+                <p className="text-sm text-black">{label}</p>
+                <p className="text-xs text-slate-400 mt-0.5">{description}</p>
             </div>
             <button
                 type="button"
                 onClick={() => onChange(!checked)}
-                className={`relative shrink-0 h-6 w-11 rounded-full transition-colors ${checked ? "bg-indigo-600" : "bg-gray-700"
+                className={`relative shrink-0 h-6 w-11 rounded-full transition-colors ${checked ? "bg-blue-600" : "bg-slate-200"
                     }`}
             >
                 <span className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${checked ? "translate-x-5" : "translate-x-0"
@@ -171,3 +171,4 @@ function Toggle({
         </label>
     );
 }
+

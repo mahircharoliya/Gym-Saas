@@ -23,7 +23,7 @@ export default function ReportsLayout({ children }: { children: React.ReactNode 
                         <Link key={tab.href} href={tab.href}
                             className={clsx(
                                 "px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors",
-                                active ? "border-indigo-500 text-white" : "border-transparent text-gray-400 hover:text-white"
+                                active ? "border-blue-500 text-black" : "border-transparent text-gray-400 hover:text-black"
                             )}>
                             {tab.label}
                         </Link>
@@ -34,3 +34,4 @@ export default function ReportsLayout({ children }: { children: React.ReactNode 
         </div>
     );
 }
+

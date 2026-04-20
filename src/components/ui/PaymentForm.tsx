@@ -64,9 +64,9 @@ export default function PaymentForm({ amount, productName, billingInterval, onPa
     }
 
     return (
-        <div className="rounded-2xl border border-gray-800 bg-gray-900 p-6 space-y-5">
+        <div className="rounded-2xl border border-gray-800 bg-white p-6 space-y-5">
             <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-white">Payment</p>
+                <p className="text-sm font-medium text-black">Payment</p>
                 <div className="flex items-center gap-1 text-xs text-gray-500">
                     <Lock size={11} /> Secured by Authorize.net
                 </div>
@@ -75,10 +75,10 @@ export default function PaymentForm({ amount, productName, billingInterval, onPa
             {/* Order summary */}
             <div className="rounded-lg bg-gray-950 px-4 py-3 flex items-center justify-between">
                 <div>
-                    <p className="text-sm font-medium text-white">{productName}</p>
+                    <p className="text-sm font-medium text-black">{productName}</p>
                     <p className="text-xs text-gray-500">{INTERVAL[billingInterval] ?? billingInterval}</p>
                 </div>
-                <p className="text-lg font-bold text-white">${amount.toFixed(2)}</p>
+                <p className="text-lg font-bold text-black">${amount.toFixed(2)}</p>
             </div>
 
             {error && <p className="text-sm text-red-400">{error}</p>}
@@ -92,7 +92,7 @@ export default function PaymentForm({ amount, productName, billingInterval, onPa
                             onChange={(e) => set("cardNumber", formatCard(e.target.value))}
                             placeholder="1234 5678 9012 3456"
                             maxLength={19}
-                            className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5 pl-10 text-sm text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
+                            className="w-full rounded-lg border border-gray-700 bg-white px-4 py-2.5 pl-10 text-sm text-black placeholder-gray-500 outline-none focus:ring-2 focus:ring-blue-500 font-mono"
                         />
                         <CreditCard size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                     </div>
@@ -106,7 +106,7 @@ export default function PaymentForm({ amount, productName, billingInterval, onPa
                             onChange={(e) => set("expirationDate", formatExpiry(e.target.value))}
                             placeholder="MM/YY"
                             maxLength={5}
-                            className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-indigo-500 font-mono"
+                            className="w-full rounded-lg border border-gray-700 bg-white px-4 py-2.5 text-sm text-black placeholder-gray-500 outline-none focus:ring-2 focus:ring-blue-500 font-mono"
                         />
                     </div>
                     <Input label="CVV" value={card.cvv}
@@ -124,3 +124,4 @@ export default function PaymentForm({ amount, productName, billingInterval, onPa
         </div>
     );
 }
+

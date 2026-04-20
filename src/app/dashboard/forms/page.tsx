@@ -154,12 +154,12 @@ export default function FormsPage() {
     return (
       <div className="max-w-2xl space-y-5">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-white">
+          <h2 className="text-lg font-semibold text-black">
             {editing ? "Edit Form" : "New Signup Form"}
           </h2>
           <button
             onClick={() => setCreating(false)}
-            className="text-sm text-gray-400 hover:text-white"
+            className="text-sm text-gray-400 hover:text-black"
           >
             ← Back
           </button>
@@ -181,7 +181,7 @@ export default function FormsPage() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Optional description shown to members..."
-            className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+            className="w-full rounded-lg border border-gray-700 bg-white px-4 py-2.5 text-sm text-black placeholder-gray-500 outline-none focus:ring-2 focus:ring-blue-500 resize-none"
           />
         </div>
 
@@ -202,7 +202,7 @@ export default function FormsPage() {
                   onChange={() =>
                     toggleItem(p.id, selectedProducts, setSelectedProducts)
                   }
-                  className="accent-indigo-500"
+                  className="accent-blue-500"
                 />
                 <span className="text-sm text-gray-300">{p.name}</span>
               </label>
@@ -232,7 +232,7 @@ export default function FormsPage() {
                   onChange={() =>
                     toggleItem(w.id, selectedWaivers, setSelectedWaivers)
                   }
-                  className="accent-indigo-500"
+                  className="accent-blue-500"
                 />
                 <span className="text-sm text-gray-300">{w.title}</span>
               </label>
@@ -263,7 +263,7 @@ export default function FormsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-white">Signup Forms</h2>
+          <h2 className="text-lg font-semibold text-black">Signup Forms</h2>
           <p className="text-sm text-gray-400 mt-0.5">
             Create forms with products and waivers.
           </p>
@@ -280,7 +280,7 @@ export default function FormsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search forms…"
-            className="w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-2.5 text-sm text-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full rounded-lg border border-gray-700 bg-white px-4 py-2.5 text-sm text-black placeholder-gray-500 outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <select
@@ -288,7 +288,7 @@ export default function FormsPage() {
           onChange={(e) =>
             setFilterStatus(e.target.value as typeof filterStatus)
           }
-          className="rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500"
+          className="rounded-lg border border-gray-700 bg-white px-3 py-2.5 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="all">All Status</option>
           <option value="active">Active</option>
@@ -297,7 +297,7 @@ export default function FormsPage() {
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-          className="rounded-lg border border-gray-700 bg-gray-900 px-3 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-indigo-500"
+          className="rounded-lg border border-gray-700 bg-white px-3 py-2.5 text-sm text-black outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="newest">Newest First</option>
           <option value="oldest">Oldest First</option>
@@ -330,17 +330,17 @@ export default function FormsPage() {
             .map((f) => (
               <div
                 key={f.id}
-                className="rounded-xl border border-gray-800 bg-gray-900 px-5 py-4"
+                className="rounded-xl border border-gray-800 bg-white px-5 py-4"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
-                    <p className="font-medium text-white">{f.name}</p>
+                    <p className="font-medium text-black">{f.name}</p>
                     {f.description && (
                       <p className="text-xs text-gray-500 mt-0.5">
                         {f.description}
                       </p>
                     )}
-                    <p className="text-xs text-indigo-400 mt-1 font-mono truncate">
+                    <p className="text-xs text-blue-400 mt-1 font-mono truncate">
                       {appUrl}/join/{f.slug}
                     </p>
                     <div className="flex gap-3 mt-1.5 text-xs text-gray-500">
@@ -370,14 +370,14 @@ export default function FormsPage() {
                     </button>
                     <button
                       onClick={() => setQrForm({ slug: f.slug, name: f.name })}
-                      className="text-gray-400 hover:text-indigo-400 transition-colors"
+                      className="text-gray-400 hover:text-blue-400 transition-colors"
                       title="QR Code"
                     >
                       <QrCode size={15} />
                     </button>
                     <button
                       onClick={() => openEdit(f)}
-                      className="text-gray-400 hover:text-white transition-colors"
+                      className="text-gray-400 hover:text-black transition-colors"
                     >
                       <Pencil size={15} />
                     </button>
@@ -404,3 +404,4 @@ export default function FormsPage() {
     </div>
   );
 }
+

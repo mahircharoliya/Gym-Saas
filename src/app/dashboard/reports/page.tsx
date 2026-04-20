@@ -65,21 +65,21 @@ export default function ReportsPage() {
             {/* Header */}
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <h2 className="text-lg font-semibold text-white">Reports & Analytics</h2>
-                    <p className="text-sm text-gray-400 mt-0.5">Track growth, revenue, and engagement.</p>
+                    <h2 className="text-lg font-semibold text-black">Reports & Analytics</h2>
+                    <p className="text-sm text-slate-400 mt-0.5">Track growth, revenue, and engagement.</p>
                 </div>
                 <div className="flex items-center gap-2">
                     {RANGES.map((r) => (
                         <button key={r.value} onClick={() => setRange(r.value)}
-                            className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${range === r.value
-                                    ? "bg-indigo-600 text-white"
-                                    : "border border-gray-700 text-gray-400 hover:text-white"
+                            className={`rounded-xl px-3 py-1.5 text-sm font-medium transition-colors ${range === r.value
+                                ? "bg-blue-600 text-black shadow-sm"
+                                : "border border-slate-200 text-slate-500 hover:text-black hover:bg-slate-50"
                                 }`}>
                             {r.label}
                         </button>
                     ))}
                     <button onClick={fetchAnalytics}
-                        className="rounded-lg border border-gray-700 p-2 text-gray-400 hover:text-white transition-colors">
+                        className="rounded-xl border border-slate-200 p-2 text-slate-400 hover:text-black hover:bg-slate-50 transition-colors">
                         <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
                     </button>
                 </div>
@@ -87,7 +87,7 @@ export default function ReportsPage() {
 
             {loading && !overview ? (
                 <div className="flex justify-center py-20">
-                    <span className="h-6 w-6 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
+                    <span className="h-6 w-6 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
                 </div>
             ) : overview && (
                 <>
@@ -96,21 +96,21 @@ export default function ReportsPage() {
                         <StatCard label="Total Members" value={overview.totalMembers}
                             sub={`+${overview.newMembers} this period`}
                             trend={parseFloat(overview.growthRate)}
-                            icon={Users} iconColor="text-indigo-400" iconBg="bg-indigo-500/10" />
+                            icon={Users} iconColor="text-blue-600" iconBg="bg-blue-50" />
                         <StatCard label="Active Plans" value={overview.activeMembers}
                             sub={`${overview.cancelledInRange} cancelled`}
-                            icon={CreditCard} iconColor="text-emerald-400" iconBg="bg-emerald-500/10" />
+                            icon={CreditCard} iconColor="text-emerald-600" iconBg="bg-emerald-50" />
                         <StatCard label="MRR" value={`$${Number(overview.mrr).toLocaleString()}`}
                             sub={`ARR $${Number(overview.arr).toLocaleString()}`}
-                            icon={TrendingUp} iconColor="text-violet-400" iconBg="bg-violet-500/10" />
+                            icon={TrendingUp} iconColor="text-violet-600" iconBg="bg-violet-50" />
                         <StatCard label="Churn Rate" value={`${overview.churnRate}%`}
                             sub={`${overview.totalCheckIns} check-ins`}
-                            icon={UserMinus} iconColor="text-sky-400" iconBg="bg-sky-500/10" />
+                            icon={UserMinus} iconColor="text-sky-600" iconBg="bg-sky-50" />
                     </div>
 
                     {/* Check-ins area chart */}
-                    <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
-                        <p className="text-sm font-medium text-white mb-4">Daily Check-ins</p>
+                    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                        <p className="text-sm font-semibold text-black mb-5">Daily Check-ins</p>
                         <ResponsiveContainer width="100%" height={220}>
                             <AreaChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
                                 <defs>
@@ -119,12 +119,12 @@ export default function ReportsPage() {
                                         <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
-                                <XAxis dataKey="date" tick={{ fill: "#6b7280", fontSize: 11 }}
+                                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                                <XAxis dataKey="date" tick={{ fill: "#64748b", fontSize: 11 }}
                                     tickLine={false} axisLine={false} interval="preserveStartEnd" />
-                                <YAxis tick={{ fill: "#6b7280", fontSize: 11 }} tickLine={false} axisLine={false} />
-                                <Tooltip contentStyle={{ backgroundColor: "#111827", border: "1px solid #374151", borderRadius: 8 }}
-                                    labelStyle={{ color: "#f9fafb" }} itemStyle={{ color: "#a5b4fc" }} />
+                                <YAxis tick={{ fill: "#64748b", fontSize: 11 }} tickLine={false} axisLine={false} />
+                                <Tooltip contentStyle={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8 }}
+                                    labelStyle={{ color: "#0f172a" }} itemStyle={{ color: "#4f46e5" }} />
                                 <Area type="monotone" dataKey="checkIns" stroke="#6366f1" strokeWidth={2}
                                     fill="url(#ciGrad)" name="Check-ins" />
                             </AreaChart>
@@ -133,28 +133,28 @@ export default function ReportsPage() {
 
                     {/* New members bar + plan pie */}
                     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                        <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
-                            <p className="text-sm font-medium text-white mb-4">New Members</p>
+                        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                            <p className="text-sm font-semibold text-black mb-5">New Members</p>
                             <ResponsiveContainer width="100%" height={200}>
                                 <BarChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
-                                    <XAxis dataKey="date" tick={{ fill: "#6b7280", fontSize: 11 }}
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                                    <XAxis dataKey="date" tick={{ fill: "#64748b", fontSize: 11 }}
                                         tickLine={false} axisLine={false} interval="preserveStartEnd" />
-                                    <YAxis tick={{ fill: "#6b7280", fontSize: 11 }} tickLine={false} axisLine={false} />
-                                    <Tooltip contentStyle={{ backgroundColor: "#111827", border: "1px solid #374151", borderRadius: 8 }}
-                                        labelStyle={{ color: "#f9fafb" }} itemStyle={{ color: "#6ee7b7" }} />
+                                    <YAxis tick={{ fill: "#64748b", fontSize: 11 }} tickLine={false} axisLine={false} />
+                                    <Tooltip contentStyle={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8 }}
+                                        labelStyle={{ color: "#0f172a" }} itemStyle={{ color: "#059669" }} />
                                     <Bar dataKey="newMembers" fill="#10b981" radius={[3, 3, 0, 0]} name="New Members" />
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
 
-                        <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
-                            <p className="text-sm font-medium text-white mb-4">Active Plans Breakdown</p>
+                        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                            <p className="text-sm font-semibold text-black mb-5">Active Plans Breakdown</p>
                             {plans.length === 0 ? (
                                 <div className="flex items-center justify-center h-48">
                                     <div className="text-center">
-                                        <BarChart3 size={28} className="mx-auto mb-2 text-gray-600" />
-                                        <p className="text-sm text-gray-500">No active plans yet.</p>
+                                        <BarChart3 size={28} className="mx-auto mb-2 text-slate-300" />
+                                        <p className="text-sm text-slate-400">No active plans yet.</p>
                                     </div>
                                 </div>
                             ) : (
@@ -167,10 +167,10 @@ export default function ReportsPage() {
                                                 <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
                                             ))}
                                         </Pie>
-                                        <Tooltip contentStyle={{ backgroundColor: "#111827", border: "1px solid #374151", borderRadius: 8 }}
-                                            labelStyle={{ color: "#f9fafb" }} />
+                                        <Tooltip contentStyle={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: 8 }}
+                                            labelStyle={{ color: "#0f172a" }} />
                                         <Legend iconType="circle" iconSize={8}
-                                            formatter={(v) => <span style={{ color: "#9ca3af", fontSize: 12 }}>{v}</span>} />
+                                            formatter={(v) => <span style={{ color: "#64748b", fontSize: 12 }}>{v}</span>} />
                                     </PieChart>
                                 </ResponsiveContainer>
                             )}
@@ -178,8 +178,8 @@ export default function ReportsPage() {
                     </div>
 
                     {/* Summary table */}
-                    <div className="rounded-xl border border-gray-800 bg-gray-900 p-6">
-                        <p className="text-sm font-medium text-white mb-4">Summary</p>
+                    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                        <p className="text-sm font-semibold text-black mb-5">Summary</p>
                         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                             {[
                                 { label: "ARR", value: `$${Number(overview.arr).toLocaleString()}` },
@@ -191,9 +191,9 @@ export default function ReportsPage() {
                                 { label: "Total Check-ins", value: overview.totalCheckIns },
                                 { label: "Cancellations", value: overview.cancelledInRange },
                             ].map((item) => (
-                                <div key={item.label} className="rounded-lg border border-gray-800 px-4 py-3">
-                                    <p className="text-xs text-gray-500">{item.label}</p>
-                                    <p className="text-lg font-semibold text-white mt-0.5">{item.value}</p>
+                                <div key={item.label} className="rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 hover:border-slate-200 transition-colors">
+                                    <p className="text-xs text-slate-400 uppercase tracking-wide">{item.label}</p>
+                                    <p className="text-lg font-bold text-black mt-1">{item.value}</p>
                                 </div>
                             ))}
                         </div>
@@ -203,3 +203,4 @@ export default function ReportsPage() {
         </div>
     );
 }
+

@@ -12,7 +12,7 @@ function getToken(req: NextRequest): string | null {
     return null;
 }
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
     const { pathname, hostname } = req.nextUrl;
     const baseDomain = process.env.NEXT_PUBLIC_BASE_DOMAIN ?? "thinkauric.com";
 
