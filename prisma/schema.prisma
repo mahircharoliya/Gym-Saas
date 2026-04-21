@@ -37,8 +37,12 @@ model User {
   phone          String?
   role           Role            @default(MEMBER)
   emailVerified  Boolean         @default(false)
+  specialization String?
+  certifications String?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
+  emailReminders Boolean         @default(true)
+  smsReminders   Boolean         @default(false)
   checkIns       CheckIn[]
   classBookings  ClassBooking[]
   trainerClasses GymClass[]      @relation("TrainerClasses")
@@ -50,9 +54,6 @@ model User {
   @@unique([tenantId, email])
   @@index([tenantId])
   @@index([email])
-
-  emailReminders  Boolean  @default(true)
-  smsReminders    Boolean  @default(false)
 }
 
 model Invite {

@@ -55,9 +55,9 @@ export default function QRScanner({ onScan }: Props) {
                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
                         <Camera size={36} className="text-gray-600" />
                         <p className="text-sm text-gray-500">Camera inactive</p>
-                    </div>
+                    </div>                     
                 )}
-                {/* Scan overlay */}
+                {/* Scan overlay */} 
                 {active && (
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                         <div className="w-48 h-48 border-2 border-blue-400 rounded-xl opacity-70" />

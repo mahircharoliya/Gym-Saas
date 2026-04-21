@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
-const PUBLIC_ROUTES = ["/login", "/signup", "/invite", "/join", "/api/cron"];
+const PUBLIC_ROUTES = ["/login", "/signup", "/invite", "/join", "/api/cron", "/api/gyms"];
 const API_AUTH_PREFIX = "/api/auth";
 
 function getToken(req: NextRequest): string | null {
