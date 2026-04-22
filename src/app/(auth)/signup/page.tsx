@@ -66,7 +66,7 @@ export default function SignupPage() {
                         </div>
                         <h1 className="text-4xl font-bold text-slate-900 mb-3">
                             Welcome to GymSaaS
-                        </h1>
+                        </h1>                     
                         <p className="text-lg text-slate-600">
                             Choose how you want to join
                         </p>
@@ -96,7 +96,7 @@ export default function SignupPage() {
                                     </p>
 
                                     {/* Features */}
-                                    <ul className="space-y-2 mb-6">
+                                    <ul className="space-y-2 mb-6">  
                                         {role.features.map((feature) => (
                                             <li key={feature} className="flex items-center gap-2 text-sm text-slate-600">
                                                 <div className="h-1.5 w-1.5 rounded-full bg-slate-400" />

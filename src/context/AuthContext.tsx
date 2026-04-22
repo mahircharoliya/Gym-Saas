@@ -67,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Also set cookie so proxy can read it
         document.cookie = `token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Lax`;
         setState({ token, user, tenant, loading: false });
-    }
+    } 
 
     function logout() {
         localStorage.removeItem("token");

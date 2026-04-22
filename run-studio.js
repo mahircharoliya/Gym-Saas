@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
-require('dotenv').config({ path: '.env' });
-require('dotenv').config({ path: '.env.local', override: true });
+import dotenv from 'dotenv';
+dotenv.config({ path: '.env' });
+dotenv.config({ path: '.env.local', override: true });
 
-const { spawn } = require('child_process');
+import { spawn } from 'child_process';
 
 if (!process.env.DATABASE_URL) {
   console.error('❌ DATABASE_URL not found in .env or .env.local file');

@@ -1,10 +1,10 @@
-const { PrismaClient } = require('@prisma/client');
-const { PrismaNeon } = require('@prisma/adapter-neon');
-const { neonConfig } = require('@neondatabase/serverless');
-const bcrypt = require('bcryptjs');
-const dotenv = require('dotenv');
-const path = require('path');
-const ws = require('ws');
+import { PrismaClient } from '@prisma/client';
+import { PrismaNeon } from '@prisma/adapter-neon';
+import { neonConfig } from '@neondatabase/serverless';
+import bcrypt from 'bcryptjs';
+import dotenv from 'dotenv';
+import path from 'path';
+import ws from 'ws';
 
 // Load environment variables
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
@@ -38,15 +38,15 @@ async function main() {
       where: { id: existingAdmin.tenantId } 
     });
     
-    console.log('⚠️  Admin user already exists!');
-    console.log('\n📋 Existing Admin Credentials:');
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('ting Admin Credentials:');
+    console.log('━⚠️  Admin user already exists!');
+    console.log('\n📋 Exis━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log(`   Email:    ${existingAdmin.email}`);
     console.log(`   Password: (use your existing password)`);
     console.log(`   Role:     ${existingAdmin.role}`);
     console.log(`   Gym:      ${gym?.name || 'Unknown'}`);
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-    return;
+    return; 
   }
 
   // Create a gym (tenant)
